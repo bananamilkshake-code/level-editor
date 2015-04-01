@@ -16,12 +16,14 @@ SOURCES += main.cpp\
 	mainwindow.cpp \
     level.cpp \
     drawarea.cpp \
-    element.cpp
+    element.cpp \
+    config.cpp
 
 HEADERS  += mainwindow.h \
     level.h \
     drawarea.h \
-    element.h
+    element.h \
+    config.h
 
 FORMS    += mainwindow.ui
 

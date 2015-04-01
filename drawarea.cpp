@@ -13,17 +13,20 @@ DrawArea::DrawArea(QWidget * parent):
 DrawArea::~DrawArea()
 {}
 
+void DrawArea::setCurrentPixmap(const QPixmap &pixmap)
+{
+	this->currentPixmap = pixmap;
+}
+
 void DrawArea::paintEvent(QPaintEvent *paintEvent)
 {
 	QPainter painter(this);
-	QImage pixmap("C:\\yellow.png");
 	QPoint imagePosition = this->cursorPosition * PROPORTION;
-	painter.drawImage(imagePosition.x(), imagePosition.y(), pixmap);
+	painter.drawPixmap(imagePosition.x(), imagePosition.y(), this->currentPixmap);
 }
 
 void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 {
-	QMessageBox box;
 	QPoint pos = eventPress->pos();
 
 	this->cursorPosition = pos / PROPORTION;

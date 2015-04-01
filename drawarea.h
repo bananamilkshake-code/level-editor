@@ -11,10 +11,14 @@ public:
 	DrawArea(QWidget * parent = 0);
 	~DrawArea();
 
+	void setCurrentPixmap(const QPixmap &pixmap);
+
 protected:
 	void paintEvent(QPaintEvent *paintEvent);
 	void mousePressEvent(QMouseEvent *eventPress);
 
 private:
 	QPoint cursorPosition;
+
+	QPixmap currentPixmap;
 };
