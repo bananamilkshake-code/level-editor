@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+	mainwindow.cpp \
     level.cpp \
     drawarea.cpp \
     element.cpp
@@ -24,3 +24,5 @@ HEADERS  += mainwindow.h \
     element.h
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++11
