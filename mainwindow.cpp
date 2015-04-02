@@ -1,10 +1,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QPainter>
-#include <QPixmap>
-#include <QDirIterator>
 #include <QDebug>
+#include <QDirIterator>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QUrl>
+
+const QString MainWindow::LEVEL_FILE_FILTER = "Levels (*.level)";
+
+void MainWindow::extarctNameAndPath(const QString &source, QString &name, QString &path)
+{
+	QDir::toNativeSeparators(source);
+	int lastSeparatorIndex = source.lastIndexOf(QDir::separator());
+
+	path = source.mid(0, lastSeparatorIndex);
+	name = source.mid(lastSeparatorIndex + 1, source.size() - lastSeparatorIndex);
+}
 
 MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent),
@@ -27,31 +41,90 @@ MainWindow::MainWindow(QWidget *parent):
 	this->updateElementsList();
 
 	this->setFixedSize(this->size());
+
+	this->setMenuActionsState(LevelUnloaded);
 }
 
 MainWindow::~MainWindow()
 {
+	if (this->level)
+		delete this->level;
+
 	delete this->drawArea;
+
 	delete ui;
 }
 
-void MainWindow::onActionNewLevelTriggered()
-{}
-
-void MainWindow::onActionSaveTriggered()
-{}
-
-void MainWindow::onActionLoadTriggered()
-{}
-
-void MainWindow::onActionAddItemTriggered()
-{}
-
-void MainWindow::on_listElements_clicked(const QModelIndex &index)
+void MainWindow::on_actionNewLevel_triggered()
 {
-	const Element &selectedElement = this->elements[index.row()];
+	QString name = QInputDialog::getText(this, "Новый уровень", "Введите имя нового уровня");
 
-	this->drawArea->setCurrentPixmap(selectedElement.getPixmap());
+	this->level = new Level(this->elements, name, QSize(Level::WIDTH, Level::HEIGHT));
+}
+
+void MainWindow::on_actionSaveLevel_triggered()
+{
+	QString saveName = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(), LEVEL_FILE_FILTER);
+	QString name;
+	QString path;
+
+	extarctNameAndPath(saveName, name, path);
+
+	this->level->save(name, path);
+
+	this->setMenuActionsState(LevelLoaded);
+}
+
+void MainWindow::on_actionLoadLevel_triggered()
+{
+	QString url = QFileDialog::getOpenFileName(this, tr("Открыть"), QString(), LEVEL_FILE_FILTER);
+	QString name;
+	QString path;
+
+	extarctNameAndPath(url, name, path);
+
+	this->level = new Level(this->elements, name, path);
+
+	this->setMenuActionsState(LevelLoaded);
+}
+
+void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
+{
+	auto elementIter = this->elements.find(item->text());
+	if (elementIter == this->elements.end())
+	{
+		qDebug() << "No element with name " << item->text();
+		return;
+	}
+
+	this->drawArea->setCurrentElement(elementIter.value());
+}
+
+void MainWindow::on_buttonEraser_clicked()
+{
+	this->drawArea->setEraser();
+}
+
+void MainWindow::closeLevel()
+{
+	if (this->level == nullptr)
+		return;
+
+	if (!this->level->isChanged())
+	{
+		QMessageBox::StandardButton reply = QMessageBox::question(this, "Изменения", "Имеются не сохраненные изменения. Сохранить?", QMessageBox::Yes | QMessageBox::No);
+		switch (reply)
+		{
+		case QMessageBox::Yes:
+				this->on_actionSaveLevel_triggered();
+			break;
+		case QMessageBox::No:
+		default:
+			break;
+		}
+	}
+
+	delete this->level;
 }
 
 void MainWindow::loadElement(const QString &elementName)
@@ -64,9 +137,27 @@ void MainWindow::loadElement(const QString &elementName)
 		return;
 	}
 
-	this->elements.push_back(Element(elementName, pixmap));
+	this->elements.insert(elementName, Element(elementName, pixmap));
 
 	this->ui->listElements->addItem(elementName);
+
+	this->setMenuActionsState(LevelLoaded);
+}
+
+void MainWindow::setMenuActionsState(MenuState state)
+{
+	switch (state)
+	{
+	case LevelUnloaded:
+		this->ui->actionSaveLevel->setEnabled(false);
+		break;
+	case LevelLoaded:
+		this->ui->actionSaveLevel->setEnabled(false);
+		break;
+	case LevelChanged:
+		this->ui->actionSaveLevel->setEnabled(true);
+		break;
+	}
 }
 
 void MainWindow::updateElementsList()

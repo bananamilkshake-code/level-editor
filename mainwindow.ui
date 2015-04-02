@@ -17,11 +17,24 @@
    <widget class="QListWidget" name="listElements">
     <property name="geometry">
      <rect>
-      <x>-40</x>
+      <x>210</x>
       <y>50</y>
       <width>529</width>
       <height>299</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonEraser">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>350</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ластик</string>
     </property>
    </widget>
   </widget>
