@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QLayout>
 
 #include "config.h"
 #include "drawarea.h"
@@ -27,7 +28,7 @@ private slots:
 
 	void onActionAddItemTriggered();
 
-	void onListElementsClicked(const QModelIndex &index);
+	void on_listElements_clicked(const QModelIndex &index);
 
 private:
 	Config config;
