@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include "element.h"
+
 class DrawArea : public QWidget
 {
 	Q_OBJECT
@@ -11,14 +13,23 @@ public:
 	DrawArea(QWidget * parent = 0);
 	~DrawArea();
 
-	void setCurrentPixmap(const QPixmap &pixmap);
+	void setCurrentElement(const Element &element);
+	void setEraser();
+
+signals:
+	void elementPlaced(const QString &element, QPoint point);
+	void elementErased(QPoint point);
 
 protected:
 	void paintEvent(QPaintEvent *paintEvent);
 	void mousePressEvent(QMouseEvent *eventPress);
 
 private:
+	const Element ERASER;
+
 	QPoint cursorPosition;
 
-	QPixmap currentPixmap;
+	const Element *currentElement;
+
+	static QPixmap eraserPixmap();
 };
