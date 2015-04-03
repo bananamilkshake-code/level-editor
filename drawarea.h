@@ -21,7 +21,8 @@ signals:
 	void elementPlaced(const QString &element, QPoint point);
 
 protected:
-	void paintEvent(QPaintEvent *paintEvent);
+	void paintEvent(QPaintEvent *paintEvent) override;
+
 	void mousePressEvent(QMouseEvent *eventPress);
 
 private:

@@ -76,7 +76,7 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 	this->drawArea->setCurrentElement(element_iter.value());
 	this->drawArea->setCurrentPosition(position);
 
-	this->drawArea->update();
+	this->drawArea->repaint();
 }
 
 void MainWindow::on_actionNewLevel_triggered()
