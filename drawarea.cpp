@@ -14,7 +14,7 @@ QPixmap DrawArea::eraserPixmap()
 }
 
 DrawArea::DrawArea(QWidget * parent):
-	QWidget(parent), ERASER("Empty", eraserPixmap()), currentElement(&ERASER)
+	QWidget(parent), ERASER(QString(), eraserPixmap()), currentElement(&ERASER)
 {
 	this->setAttribute(Qt::WA_OpaquePaintEvent, true);
 }
@@ -27,6 +27,11 @@ void DrawArea::setCurrentElement(const Element &element)
 	this->currentElement = &element;
 }
 
+void DrawArea::setCurrentPosition(const QPoint &position)
+{
+	this->cursorPosition = position;
+}
+
 void DrawArea::setEraser()
 {
 	this->currentElement = &ERASER;
@@ -34,25 +39,17 @@ void DrawArea::setEraser()
 
 void DrawArea::paintEvent(QPaintEvent *paintEvent)
 {
-	QPainter painter(this);
 	QPoint imagePosition = this->cursorPosition * PROPORTION;
+
+	QPainter painter(this);
 	painter.drawPixmap(imagePosition.x(), imagePosition.y(), this->currentElement->getPixmap());
 }
 
 void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 {
-	QPoint pos = eventPress->pos();
-
-	this->cursorPosition = pos / PROPORTION;
+	this->setCurrentPosition(eventPress->pos() / PROPORTION);
 
 	this->update();
 
-	if (this->currentElement == &ERASER)
-	{
-		emit elementErased(this->cursorPosition);
-	}
-	else
-	{
-		emit elementPlaced(this->currentElement->getName(), this->cursorPosition);
-	}
+	emit elementPlaced(this->currentElement->getName(), this->cursorPosition);
 }

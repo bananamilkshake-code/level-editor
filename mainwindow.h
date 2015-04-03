@@ -23,6 +23,10 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
+public slots:
+	void placeElementOnLevel(const QString &name, QPoint position);
+	void placeLoadedElement(const QString &name, QPoint position);
+
 private slots:
 	void on_actionNewLevel_triggered();
 	void on_actionSaveLevel_triggered();
@@ -42,7 +46,7 @@ private:
 
 	static const QString LEVEL_FILE_FILTER;
 
-	static void extarctNameAndPath(const QString &source, QString &name, QString &path);
+	static void extarctNameAndPath(QString source, QString &name, QString &path);
 
 	Config config;
 
@@ -54,6 +58,7 @@ private:
 
 	QHash<QString, Element> elements;
 
+	void bindSlots();
 	void closeLevel();
 	void loadElement(const QString &elementName);
 	void setMenuActionsState(MenuState state);

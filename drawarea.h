@@ -14,11 +14,11 @@ public:
 	~DrawArea();
 
 	void setCurrentElement(const Element &element);
+	void setCurrentPosition(const QPoint &position);
 	void setEraser();
 
 signals:
 	void elementPlaced(const QString &element, QPoint point);
-	void elementErased(QPoint point);
 
 protected:
 	void paintEvent(QPaintEvent *paintEvent);

@@ -11,6 +11,7 @@ public:
 
 	QString getName() const;
 	QPixmap getPixmap() const;
+
 private:
 	QString name;
 	QPixmap pixmap;

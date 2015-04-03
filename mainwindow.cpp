@@ -11,9 +11,9 @@
 
 const QString MainWindow::LEVEL_FILE_FILTER = "Levels (*.level)";
 
-void MainWindow::extarctNameAndPath(const QString &source, QString &name, QString &path)
+void MainWindow::extarctNameAndPath(QString source, QString &name, QString &path)
 {
-	QDir::toNativeSeparators(source);
+	source = QDir::toNativeSeparators(source);
 	int lastSeparatorIndex = source.lastIndexOf(QDir::separator());
 
 	path = source.mid(0, lastSeparatorIndex);
@@ -22,7 +22,8 @@ void MainWindow::extarctNameAndPath(const QString &source, QString &name, QStrin
 
 MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	level(nullptr)
 {
 	this->ui->setupUi(this);
 
@@ -55,11 +56,40 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
+{
+	this->level->add(name, position);
+
+	this->setMenuActionsState(LevelChanged);
+}
+
+void MainWindow::placeLoadedElement(const QString &name, QPoint position)
+{
+	auto element_iter = this->elements.constFind(name);
+	if (element_iter == this->elements.end())
+	{
+		return;
+	}
+
+	qDebug() << "Element with name " << name;
+
+	this->drawArea->setCurrentElement(element_iter.value());
+	this->drawArea->setCurrentPosition(position);
+
+	this->drawArea->update();
+}
+
 void MainWindow::on_actionNewLevel_triggered()
 {
+	this->closeLevel();
+
 	QString name = QInputDialog::getText(this, "Новый уровень", "Введите имя нового уровня");
 
 	this->level = new Level(this->elements, name, QSize(Level::WIDTH, Level::HEIGHT));
+
+	this->setMenuActionsState(LevelChanged);
+
+	this->bindSlots();
 }
 
 void MainWindow::on_actionSaveLevel_triggered()
@@ -77,6 +107,8 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 void MainWindow::on_actionLoadLevel_triggered()
 {
+	this->closeLevel();
+
 	QString url = QFileDialog::getOpenFileName(this, tr("Открыть"), QString(), LEVEL_FILE_FILTER);
 	QString name;
 	QString path;
@@ -84,6 +116,10 @@ void MainWindow::on_actionLoadLevel_triggered()
 	extarctNameAndPath(url, name, path);
 
 	this->level = new Level(this->elements, name, path);
+
+	this->bindSlots();
+
+	this->level->load();
 
 	this->setMenuActionsState(LevelLoaded);
 }
@@ -105,12 +141,18 @@ void MainWindow::on_buttonEraser_clicked()
 	this->drawArea->setEraser();
 }
 
+void MainWindow::bindSlots()
+{
+	QObject::connect(this->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
+	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
+}
+
 void MainWindow::closeLevel()
 {
 	if (this->level == nullptr)
 		return;
 
-	if (!this->level->isChanged())
+	if (this->level->isChanged())
 	{
 		QMessageBox::StandardButton reply = QMessageBox::question(this, "Изменения", "Имеются не сохраненные изменения. Сохранить?", QMessageBox::Yes | QMessageBox::No);
 		switch (reply)
