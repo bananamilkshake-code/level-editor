@@ -169,7 +169,7 @@ bool MainWindow::closeLevel()
 	if (this->level == nullptr)
 		return true;
 
-	bool toClose = false;
+	bool toClose = true;
 	if (this->level->isChanged())
 	{
 		QMessageBox::StandardButton reply = QMessageBox::question(this, "Изменения", "Имеются не сохраненные изменения. Сохранить?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
