@@ -49,9 +49,6 @@ MainWindow::MainWindow(QWidget *parent):
 
 MainWindow::~MainWindow()
 {
-	if (this->level)
-		delete this->level;
-
 	delete this->drawArea;
 
 	delete ui;
