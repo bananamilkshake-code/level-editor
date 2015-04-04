@@ -29,12 +29,14 @@ public slots:
 	void placeElementOnLevel(const QString &name, QPoint position);
 	void placeLoadedElement(const QString &name, QPoint position);
 	void addElement(Element element);
+	void replaceElement(Element element);
 
 private slots:
 	void on_actionNewLevel_triggered();
 	void on_actionSaveLevel_triggered();
 	void on_actionLoadLevel_triggered();
 	void on_actionAddElement_triggered();
+	void on_actionChangeElement_triggered();
 
 	void on_listElements_itemClicked(QListWidgetItem *item);
 
@@ -52,7 +54,7 @@ private:
 		LevelChanged,
 	};
 
-	enum Action
+	enum ToolSelection
 	{
 		ActionErase,
 		ActionPaint,
@@ -76,8 +78,8 @@ private:
 	bool closeLevel();
 
 	void bindSlots();
+	void changeMenuState(MenuState state);
+	void changeToolSelection(ToolSelection toolSelection);
 	void loadElement(const QString &elementName);
-	void setMenuActionsState(MenuState state);
-	void setActionChoosed(Action action);
 	void updateElementsList();
 };

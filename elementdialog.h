@@ -6,16 +6,17 @@
 #include "element.h"
 
 namespace Ui {
-class AddElementDialog;
+class ElementDialog;
 }
 
-class AddElementDialog : public QDialog
+class ElementDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit AddElementDialog(QWidget *parent, QString elementsDirectory);
-	~AddElementDialog();
+	ElementDialog(QWidget *parent, QString elementsDirectory);
+	ElementDialog(QWidget *parent, QString elementsDirectory, const Element &element);
+	~ElementDialog();
 
 signals:
 	void elementAdded(Element newElement);
@@ -25,7 +26,7 @@ private slots:
 	void on_buttonImageLoad_clicked();
 
 private:
-	Ui::AddElementDialog *ui;
+	Ui::ElementDialog *ui;
 
 	QString elementsDirectory;
 };

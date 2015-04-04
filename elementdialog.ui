@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddElementDialog</class>
- <widget class="QDialog" name="AddElementDialog">
+ <class>ElementDialog</class>
+ <widget class="QDialog" name="ElementDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,42 +13,38 @@
   <property name="windowTitle">
    <string>Добавить элемент</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelName">
+         <property name="text">
+          <string>Название:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineName"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="layoutLoadPicture">
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelName">
-           <property name="text">
-            <string>Название:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="lineName"/>
-         </item>
-        </layout>
+        <widget class="QLabel" name="labelPicture">
+         <property name="text">
+          <string>Изображение</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="labelPicture">
-           <property name="text">
-            <string>Изображение</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="buttonImageLoad">
-           <property name="text">
-            <string>Загрузить</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QPushButton" name="buttonImageLoad">
+         <property name="text">
+          <string>Загрузить</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -91,9 +87,12 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QVBoxLayout" name="layoutParams"/>
+     </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="acceptDrops">
       <bool>false</bool>
@@ -116,7 +115,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AddElementDialog</receiver>
+   <receiver>ElementDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -132,7 +131,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AddElementDialog</receiver>
+   <receiver>ElementDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

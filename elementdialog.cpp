@@ -1,5 +1,5 @@
-#include "addelementdialog.h"
-#include "ui_addelementdialog.h"
+#include "elementdialog.h"
+#include "ui_elementdialog.h"
 
 #include <QDir>
 #include <QFileDialog>
@@ -8,9 +8,9 @@
 #include "config.h"
 #include "drawarea.h"
 
-AddElementDialog::AddElementDialog(QWidget *parent, QString elementsDirectory):
+ElementDialog::ElementDialog(QWidget *parent, QString elementsDirectory):
 	QDialog(parent),
-	ui(new Ui::AddElementDialog),
+	ui(new Ui::ElementDialog),
 	elementsDirectory(elementsDirectory)
 {
 	ui->setupUi(this);
@@ -21,10 +21,17 @@ AddElementDialog::AddElementDialog(QWidget *parent, QString elementsDirectory):
 	this->adjustSize();
 }
 
-AddElementDialog::~AddElementDialog()
+ElementDialog::ElementDialog(QWidget *parent, QString elementsDirectory, const Element &element):
+	ElementDialog(parent, elementsDirectory)
+{
+	this->ui->lineName->setText(element.getName());
+	this->ui->labelPicturePreview->setPixmap(element.getPixmap());
+}
+
+ElementDialog::~ElementDialog()
 {}
 
-void AddElementDialog::on_buttonBox_accepted()
+void ElementDialog::on_buttonBox_accepted()
 {
 	QString name = this->ui->lineName->text();
 	QPixmap pixmap(*this->ui->labelPicturePreview->pixmap());
@@ -35,7 +42,7 @@ void AddElementDialog::on_buttonBox_accepted()
 	emit elementAdded(element);
 }
 
-void AddElementDialog::on_buttonImageLoad_clicked()
+void ElementDialog::on_buttonImageLoad_clicked()
 {
 	QFileDialog dialog(this, "Изображение элемента");
 

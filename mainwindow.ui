@@ -95,7 +95,6 @@
         <item>
          <widget class="ElementDescriptionWidget" name="groupBoxElementDesc">
           <layout class="QGridLayout" name="gridLayout_2"/>
-          <zorder>buttonsActions</zorder>
          </widget>
         </item>
        </layout>
@@ -127,6 +126,7 @@
      <string>Редактор</string>
     </property>
     <addaction name="actionAddElement"/>
+    <addaction name="actionChangeElement"/>
    </widget>
    <addaction name="menuAction"/>
    <addaction name="menuEditor"/>
@@ -150,6 +150,11 @@
   <action name="actionAddElement">
    <property name="text">
     <string>Добавить элемент...</string>
+   </property>
+  </action>
+  <action name="actionChangeElement">
+   <property name="text">
+    <string>Изменить выбранный элемент</string>
    </property>
   </action>
  </widget>

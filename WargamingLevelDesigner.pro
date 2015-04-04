@@ -20,7 +20,7 @@ SOURCES += main.cpp\
     config.cpp \
     elementdescriptionwidget.cpp \
     elementdescription.cpp \
-    addelementdialog.cpp
+    elementdialog.cpp
 
 HEADERS  += mainwindow.h \
     level.h \
@@ -29,10 +29,10 @@ HEADERS  += mainwindow.h \
     config.h \
     elementdescriptionwidget.h \
     elementdescription.h \
-    addelementdialog.h
+    elementdialog.h
 
 FORMS    += mainwindow.ui \
     elementdescriptionwidget.ui \
-    addelementdialog.ui
+    elementdialog.ui
 
 QMAKE_CXXFLAGS += -std=c++11

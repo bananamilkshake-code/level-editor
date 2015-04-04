@@ -10,7 +10,7 @@
 #include <QPixmap>
 #include <QUrl>
 
-#include "addelementdialog.h"
+#include "elementdialog.h"
 
 const QString MainWindow::LEVEL_FILE_FILTER = "Levels (*.level)";
 
@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent):
 
 	this->updateElementsList();
 
-	this->setMenuActionsState(LevelUnloaded);
+	this->changeMenuState(LevelUnloaded);
+	this->changeToolSelection(ActionSelect);
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +60,7 @@ void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
 {
 	this->level->add(name, position);
 
-	this->setMenuActionsState(LevelChanged);
+	this->changeMenuState(LevelChanged);
 }
 
 void MainWindow::placeLoadedElement(const QString &name, QPoint position)
@@ -85,6 +86,17 @@ void MainWindow::addElement(Element element)
 	this->ui->listElements->addItem(element.getName());
 }
 
+void MainWindow::replaceElement(Element element)
+{
+	QListWidgetItem *selectedElement = this->ui->listElements->currentItem();
+	auto elementIter = this->elements.find(selectedElement->text());
+
+	this->ui->listElements->removeItemWidget(selectedElement);
+	this->elements.erase(elementIter);
+
+	this->addElement(element);
+}
+
 void MainWindow::on_actionNewLevel_triggered()
 {
 	if (!this->closeLevel())
@@ -96,7 +108,7 @@ void MainWindow::on_actionNewLevel_triggered()
 
 	this->level = new Level(this->elements, name, Level::SIZE);
 
-	this->setMenuActionsState(LevelChanged);
+	this->changeMenuState(LevelChanged);
 
 	this->bindSlots();
 }
@@ -114,7 +126,7 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 	this->level->save(name, path);
 
-	this->setMenuActionsState(LevelLoaded);
+	this->changeMenuState(LevelLoaded);
 }
 
 void MainWindow::on_actionLoadLevel_triggered()
@@ -137,21 +149,32 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 	this->level->load();
 
-	this->setMenuActionsState(LevelLoaded);
+	this->changeMenuState(LevelLoaded);
 }
 
 void MainWindow::on_actionAddElement_triggered()
 {
-	AddElementDialog dialog(this, this->config.getElementsDictory());
+	ElementDialog dialog(this, this->config.getElementsDictory());
 
 	QObject::connect(&dialog, SIGNAL(elementAdded(Element)), this, SLOT(addElement(Element)));
 
 	dialog.exec();
 }
 
+void MainWindow::on_actionChangeElement_triggered()
+{
+	auto elementIter = this->elements.find(this->ui->listElements->currentItem()->text());
+
+	ElementDialog dialog(this, this->config.getElementsDictory(), elementIter.value());
+
+	QObject::connect(&dialog, SIGNAL(elementAdded(Element)), this, SLOT(replaceElement(Element)));
+
+	dialog.exec();
+}
+
 void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 {
-	this->setActionChoosed(ActionPaint);
+	this->changeToolSelection(ActionPaint);
 
 	auto elementIter = this->elements.find(item->text());
 	if (elementIter == this->elements.end())
@@ -165,14 +188,14 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_buttonEraser_clicked()
 {
-	this->setActionChoosed(ActionErase);
+	this->changeToolSelection(ActionErase);
 
 	this->drawArea->setEraser();
 }
 
 void MainWindow::on_buttonSelect_clicked()
 {
-	this->setActionChoosed(ActionSelect);
+	this->changeToolSelection(ActionSelect);
 
 	this->drawArea->startSelecting();
 }
@@ -229,25 +252,26 @@ void MainWindow::bindSlots()
 	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
 }
 
+void MainWindow::changeMenuState(MenuState state)
+{
+	this->drawArea->setEnabled(LevelUnloaded != state);
+	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
+}
+
+void MainWindow::changeToolSelection(ToolSelection toolSelection)
+{
+	this->ui->actionChangeElement->setEnabled(ActionPaint == toolSelection);
+	this->ui->listElements->setItemSelected(this->ui->listElements->currentItem(), ActionPaint == toolSelection);
+	this->ui->buttonSelect->setDown(ActionSelect == toolSelection);
+	this->ui->buttonEraser->setDown(ActionErase == toolSelection);
+}
+
 void MainWindow::loadElement(const QString &elementName)
 {
 	Element newElement(elementName);
 	newElement.load(this->config.getElementsDictory());
 
 	this->addElement(newElement);
-}
-
-void MainWindow::setMenuActionsState(MenuState state)
-{
-	this->drawArea->setEnabled(LevelUnloaded != state);
-	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
-}
-
-void MainWindow::setActionChoosed(Action action)
-{
-	this->ui->listElements->setItemSelected(this->ui->listElements->currentItem(), ActionPaint == action);
-	this->ui->buttonSelect->setDown(ActionSelect == action);
-	this->ui->buttonEraser->setDown(ActionErase == action);
 }
 
 void MainWindow::updateElementsList()
