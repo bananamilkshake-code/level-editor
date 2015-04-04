@@ -1,10 +1,10 @@
 #pragma once
 
-#include <QWidget>
+#include <QFrame>
 
 #include "element.h"
 
-class DrawArea : public QWidget
+class DrawArea : public QFrame
 {
 	Q_OBJECT
 public:
@@ -16,14 +16,16 @@ public:
 	void setCurrentElement(const Element &element);
 	void setCurrentPosition(const QPoint &position);
 	void setEraser();
+	void startSelecting();
 
 signals:
 	void elementPlaced(const QString &element, QPoint point);
+	void elementSelected(QPoint point);
 
 protected:
-	void paintEvent(QPaintEvent *paintEvent) override;
+	void paintEvent(QPaintEvent *) override;
 
-	void mousePressEvent(QMouseEvent *eventPress);
+	void mousePressEvent(QMouseEvent *eventPress) override;
 
 private:
 	const Element ERASER;
@@ -31,6 +33,8 @@ private:
 	QPoint cursorPosition;
 
 	const Element *currentElement;
+
+	bool needDraw;
 
 	static QPixmap eraserPixmap();
 };

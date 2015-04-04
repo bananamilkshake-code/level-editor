@@ -5,6 +5,8 @@
 #include <QDir>
 #include <QFile>
 
+const QSize Level::SIZE = QSize(20, 15);
+
 Level::ElementDesc::ElementDesc():
 	ElementDesc(QString())
 {}
@@ -78,6 +80,11 @@ QSize Level::getSize() const
 	size_t width = (height > 0) ? this->elements[0].size() : 0;
 
 	return QSize(width, height);
+}
+
+Level::ElementDesc& Level::select(QPoint position)
+{
+	return this->elements[position.y()][position.x()];
 }
 
 bool Level::isNew() const

@@ -25,6 +25,7 @@ public:
 	~MainWindow();
 
 public slots:
+	void selectElement(QPoint position);
 	void placeElementOnLevel(const QString &name, QPoint position);
 	void placeLoadedElement(const QString &name, QPoint position);
 
@@ -36,6 +37,7 @@ private slots:
 	void on_listElements_itemClicked(QListWidgetItem *item);
 
 	void on_buttonEraser_clicked();
+	void on_buttonSelect_clicked();
 
 protected:
 	void closeEvent(QCloseEvent *event) override;
@@ -45,7 +47,14 @@ private:
 	{
 		LevelUnloaded,
 		LevelLoaded,
-		LevelChanged
+		LevelChanged,
+	};
+
+	enum Action
+	{
+		ActionErase,
+		ActionPaint,
+		ActionSelect,
 	};
 
 	static const QString LEVEL_FILE_FILTER;
@@ -67,5 +76,6 @@ private:
 	void bindSlots();
 	void loadElement(const QString &elementName);
 	void setMenuActionsState(MenuState state);
+	void setActionChoosed(Action action);
 	void updateElementsList();
 };

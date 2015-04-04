@@ -29,20 +29,12 @@ MainWindow::MainWindow(QWidget *parent):
 	this->ui->setupUi(this);
 
 	this->drawArea = new DrawArea(this);
-	this->drawArea->setGeometry(0,
-				    this->ui->menuBar->height(),
-				    Level::WIDTH * DrawArea::PROPORTION,
-				    Level::HEIGHT * DrawArea::PROPORTION);
 
-	this->ui->listElements->setGeometry(this->drawArea->geometry().width(),
-					    0,
-					    this->ui->listElements->width(),
-					    this->drawArea->height());
+	this->ui->layoutDrawArea->addWidget(this->drawArea);
 
+	this->drawArea->resize(Level::SIZE * DrawArea::PROPORTION);
 
 	this->updateElementsList();
-
-	this->setFixedSize(this->size());
 
 	this->setMenuActionsState(LevelUnloaded);
 }
@@ -52,6 +44,11 @@ MainWindow::~MainWindow()
 	delete this->drawArea;
 
 	delete ui;
+}
+
+void MainWindow::selectElement(QPoint position)
+{
+	auto &elementDesc = this->level->select(position);
 }
 
 void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
@@ -86,7 +83,7 @@ void MainWindow::on_actionNewLevel_triggered()
 	if (name.isEmpty())
 		return;
 
-	this->level = new Level(this->elements, name, QSize(Level::WIDTH, Level::HEIGHT));
+	this->level = new Level(this->elements, name, Level::SIZE);
 
 	this->setMenuActionsState(LevelChanged);
 
@@ -134,6 +131,8 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 {
+	this->setActionChoosed(ActionPaint);
+
 	auto elementIter = this->elements.find(item->text());
 	if (elementIter == this->elements.end())
 	{
@@ -146,7 +145,16 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_buttonEraser_clicked()
 {
+	this->setActionChoosed(ActionErase);
+
 	this->drawArea->setEraser();
+}
+
+void MainWindow::on_buttonSelect_clicked()
+{
+	this->setActionChoosed(ActionSelect);
+
+	this->drawArea->startSelecting();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -196,6 +204,8 @@ bool MainWindow::closeLevel()
 void MainWindow::bindSlots()
 {
 	QObject::connect(this->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
+	QObject::connect(this->drawArea, SIGNAL(elementSelected(QPoint)), this, SLOT(selectElement(QPoint)));
+
 	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
 }
 
@@ -218,21 +228,15 @@ void MainWindow::loadElement(const QString &elementName)
 
 void MainWindow::setMenuActionsState(MenuState state)
 {
-	switch (state)
-	{
-	case LevelUnloaded:
-		this->drawArea->setEnabled(false);
-		this->ui->actionSaveLevel->setEnabled(false);
-		break;
-	case LevelLoaded:
-		this->drawArea->setEnabled(true);
-		this->ui->actionSaveLevel->setEnabled(false);
-		break;
-	case LevelChanged:
-		this->drawArea->setEnabled(true);
-		this->ui->actionSaveLevel->setEnabled(true);
-		break;
-	}
+	this->drawArea->setEnabled(LevelUnloaded != state);
+	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
+}
+
+void MainWindow::setActionChoosed(Action action)
+{
+	this->ui->listElements->setItemSelected(this->ui->listElements->currentItem(), ActionPaint == action);
+	this->ui->buttonSelect->setDown(ActionSelect == action);
+	this->ui->buttonEraser->setDown(ActionErase == action);
 }
 
 void MainWindow::updateElementsList()

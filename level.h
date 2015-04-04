@@ -13,12 +13,22 @@ class Level : public QObject
 	Q_OBJECT
 
 public:
-	static const uint8_t WIDTH = 30;
-	static const uint8_t HEIGHT = 15;
+	struct ElementDesc
+	{
+	public:
+		QString name;
+
+		ElementDesc();
+		ElementDesc(const QString &name);
+	};
+
+	static const QSize SIZE;
 
 	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, QSize size);
 	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, const QString &path);
 	virtual ~Level();
+
+	ElementDesc& select(QPoint position);
 
 	bool isNew() const;
 	bool isChanged() const;
@@ -31,15 +41,6 @@ signals:
 	void elementLoaded(const QString &name, QPoint position);
 
 private:
-	struct ElementDesc
-	{
-	public:
-		QString name;
-
-		ElementDesc();
-		ElementDesc(const QString &name);
-	};
-
 	QVector<QVector<ElementDesc>> elements;
 
 	const QHash<QString, Element> &elementsDescriptions;
