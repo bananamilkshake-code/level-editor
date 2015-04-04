@@ -1,8 +1,9 @@
 #include "config.h"
 
+const QString Config::ELEMENT_PICTURE_NAME = "pic.png";
+
 Config::Config():
-	elementsDictory("C:\\elements"),
-	elementPictureName("pic.png")
+	elementsDictory("C:\\elements")
 {}
 
 Config::~Config()
@@ -18,13 +19,7 @@ void Config::setElementsDictory(const QString &value)
 	elementsDictory = value;
 }
 
-QString Config::getElementPictureName() const
+void Config::update()
 {
-	return elementPictureName;
-}
 
-void Config::setElementPictureName(const QString &value)
-{
-	elementPictureName = value;
 }
-

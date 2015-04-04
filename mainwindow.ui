@@ -126,7 +126,7 @@
     <property name="title">
      <string>Редактор</string>
     </property>
-    <addaction name="actionAddItem"/>
+    <addaction name="actionAddElement"/>
    </widget>
    <addaction name="menuAction"/>
    <addaction name="menuEditor"/>
@@ -147,7 +147,7 @@
     <string>Загрузить</string>
    </property>
   </action>
-  <action name="actionAddItem">
+  <action name="actionAddElement">
    <property name="text">
     <string>Добавить элемент...</string>
    </property>

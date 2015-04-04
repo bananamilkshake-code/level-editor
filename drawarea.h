@@ -10,7 +10,7 @@ class DrawArea : public QFrame
 public:
 	static const uint8_t PROPORTION = 30;
 
-	DrawArea(QWidget * parent = 0);
+	DrawArea(QWidget * parent, QSize size);
 	~DrawArea();
 
 	void setCurrentElement(const Element &element);

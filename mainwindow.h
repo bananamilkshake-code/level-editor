@@ -28,11 +28,13 @@ public slots:
 	void selectElement(QPoint position);
 	void placeElementOnLevel(const QString &name, QPoint position);
 	void placeLoadedElement(const QString &name, QPoint position);
+	void addElement(Element element);
 
 private slots:
 	void on_actionNewLevel_triggered();
 	void on_actionSaveLevel_triggered();
 	void on_actionLoadLevel_triggered();
+	void on_actionAddElement_triggered();
 
 	void on_listElements_itemClicked(QListWidgetItem *item);
 

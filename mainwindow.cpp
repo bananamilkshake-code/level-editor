@@ -10,6 +10,8 @@
 #include <QPixmap>
 #include <QUrl>
 
+#include "addelementdialog.h"
+
 const QString MainWindow::LEVEL_FILE_FILTER = "Levels (*.level)";
 
 void MainWindow::extarctNameAndPath(QString source, QString &name, QString &path)
@@ -28,11 +30,9 @@ MainWindow::MainWindow(QWidget *parent):
 {
 	this->ui->setupUi(this);
 
-	this->drawArea = new DrawArea(this);
+	this->drawArea = new DrawArea(this, Level::SIZE * DrawArea::PROPORTION);
 
 	this->ui->layoutDrawArea->addWidget(this->drawArea);
-
-	this->drawArea->resize(Level::SIZE * DrawArea::PROPORTION);
 
 	this->updateElementsList();
 
@@ -76,6 +76,13 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 	this->drawArea->setCurrentPosition(position);
 
 	this->drawArea->repaint();
+}
+
+void MainWindow::addElement(Element element)
+{
+	this->elements.insert(element.getName(), element);
+
+	this->ui->listElements->addItem(element.getName());
 }
 
 void MainWindow::on_actionNewLevel_triggered()
@@ -131,6 +138,15 @@ void MainWindow::on_actionLoadLevel_triggered()
 	this->level->load();
 
 	this->setMenuActionsState(LevelLoaded);
+}
+
+void MainWindow::on_actionAddElement_triggered()
+{
+	AddElementDialog dialog(this, this->config.getElementsDictory());
+
+	QObject::connect(&dialog, SIGNAL(elementAdded(Element)), this, SLOT(addElement(Element)));
+
+	dialog.exec();
 }
 
 void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
@@ -215,19 +231,10 @@ void MainWindow::bindSlots()
 
 void MainWindow::loadElement(const QString &elementName)
 {
-	QString pathToLevel = this->config.getElementsDictory() + QDir::separator() + elementName;
-	QPixmap pixmap(pathToLevel + QDir::separator() + this->config.getElementPictureName());
-	if (pixmap.isNull())
-	{
-		qDebug() << "Pixmap for element " << elementName << " not found.";
-		return;
-	}
+	Element newElement(elementName);
+	newElement.load(this->config.getElementsDictory());
 
-	this->elements.insert(elementName, Element(elementName, pixmap));
-
-	this->ui->listElements->addItem(elementName);
-
-	this->setMenuActionsState(LevelLoaded);
+	this->addElement(newElement);
 }
 
 void MainWindow::setMenuActionsState(MenuState state)
@@ -246,9 +253,10 @@ void MainWindow::setActionChoosed(Action action)
 void MainWindow::updateElementsList()
 {
 	QDir directory(this->config.getElementsDictory());
-	auto elementsDirectory = directory.entryList(QStringList("[A-Za-z]*"));
-	for (auto elementName : elementsDirectory)
+	auto elementsDirectory = directory.entryList(QStringList("*" + Element::EXTENSION));
+	for (QString elementName : elementsDirectory)
 	{
+		elementName = elementName.mid(0, elementName.lastIndexOf('.'));
 		this->loadElement(elementName);
 	}
 }

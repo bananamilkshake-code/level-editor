@@ -5,17 +5,17 @@
 class Config
 {
 public:
+	static const QString ELEMENT_PICTURE_NAME;
+
 	Config();
 	~Config();
 
 	QString getElementsDictory() const;
 	void setElementsDictory(const QString &value);
 
-	QString getElementPictureName() const;
-	void setElementPictureName(const QString &value);
+	void update();
 
 private:
 	QString elementsDictory;
-	QString elementPictureName;
 };
 

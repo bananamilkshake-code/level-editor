@@ -14,12 +14,14 @@ QPixmap DrawArea::eraserPixmap()
 	return eraserPixmap;
 }
 
-DrawArea::DrawArea(QWidget *parent):
+DrawArea::DrawArea(QWidget *parent, QSize size):
 	QFrame(parent),
 	ERASER(QString(), eraserPixmap()),
 	currentElement(&ERASER),
 	needDraw(false)
 {
+	this->resize(size);
+
 	this->setAttribute(Qt::WA_OpaquePaintEvent, true);
 }
 
