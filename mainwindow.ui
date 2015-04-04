@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>643</height>
+    <width>806</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,13 +93,8 @@
          </layout>
         </item>
         <item>
-         <widget class="QFrame" name="frameLevelDesc">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
+         <widget class="ElementDescriptionWidget" name="groupBoxElementDesc">
+          <layout class="QGridLayout" name="gridLayout_2"/>
           <zorder>buttonsActions</zorder>
          </widget>
         </item>
@@ -114,7 +109,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>694</width>
+     <width>806</width>
      <height>21</height>
     </rect>
    </property>
@@ -159,6 +154,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ElementDescriptionWidget</class>
+   <extends>QGroupBox</extends>
+   <header location="global">elementdescriptionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

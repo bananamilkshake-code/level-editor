@@ -7,14 +7,6 @@
 
 const QSize Level::SIZE = QSize(20, 15);
 
-Level::ElementDesc::ElementDesc():
-	ElementDesc(QString())
-{}
-
-Level::ElementDesc::ElementDesc(const QString &name):
-	name(name)
-{}
-
 Level::Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, QSize size):
 	elementsDescriptions(elementsDescriptions),
 	name(name),
@@ -35,9 +27,9 @@ Level::~Level()
 
 void Level::init(QSize size)
 {
-	QVector<ElementDesc> record;
-	record.fill(ElementDesc(QString()), size.width());
-	this->elements.fill(record, size.height());
+	std::vector<ElementDesc> record;
+	record.assign(size.width(), ElementDesc(QString()));
+	this->elements.assign(size.height(), record);
 }
 
 void Level::load()
@@ -63,7 +55,7 @@ void Level::load()
 			QString name;
 			stream >> name;
 
-			this->elements[h][w].name = name;
+			this->elements[h][w] = ElementDesc(name);
 
 			emit elementLoaded(name, QPoint(w, h));
 		}
@@ -82,7 +74,7 @@ QSize Level::getSize() const
 	return QSize(width, height);
 }
 
-Level::ElementDesc& Level::select(QPoint position)
+const ElementDesc& Level::select(QPoint position)
 {
 	return this->elements[position.y()][position.x()];
 }
@@ -121,7 +113,7 @@ void Level::save(QString newName, QString newPath)
 	{
 		for (int w = 0; w < size.width(); ++w)
 		{
-			stream << this->elements[h][w].name;
+			stream << this->elements[h][w].getName();
 		}
 	}
 

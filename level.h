@@ -6,29 +6,23 @@
 #include <QString>
 #include <QVector>
 
+#include <vector>
+
 #include "element.h"
+#include "elementdescription.h"
 
 class Level : public QObject
 {
 	Q_OBJECT
 
 public:
-	struct ElementDesc
-	{
-	public:
-		QString name;
-
-		ElementDesc();
-		ElementDesc(const QString &name);
-	};
-
 	static const QSize SIZE;
 
 	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, QSize size);
 	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, const QString &path);
 	virtual ~Level();
 
-	ElementDesc& select(QPoint position);
+	const ElementDesc& select(QPoint position);
 
 	bool isNew() const;
 	bool isChanged() const;
@@ -41,7 +35,7 @@ signals:
 	void elementLoaded(const QString &name, QPoint position);
 
 private:
-	QVector<QVector<ElementDesc>> elements;
+	std::vector<std::vector<ElementDesc>> elements;
 
 	const QHash<QString, Element> &elementsDescriptions;
 

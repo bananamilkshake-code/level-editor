@@ -17,14 +17,19 @@ SOURCES += main.cpp\
     level.cpp \
     drawarea.cpp \
     element.cpp \
-    config.cpp
+    config.cpp \
+    elementdescriptionwidget.cpp \
+    elementdescription.cpp
 
 HEADERS  += mainwindow.h \
     level.h \
     drawarea.h \
     element.h \
-    config.h
+    config.h \
+    elementdescriptionwidget.h \
+    elementdescription.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    elementdescriptionwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++11
