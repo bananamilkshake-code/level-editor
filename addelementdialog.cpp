@@ -6,6 +6,7 @@
 #include <QString>
 
 #include "config.h"
+#include "drawarea.h"
 
 AddElementDialog::AddElementDialog(QWidget *parent, QString elementsDirectory):
 	QDialog(parent),
@@ -46,6 +47,5 @@ void AddElementDialog::on_buttonImageLoad_clicked()
 	this->ui->labelPicturePath->setText(imagePath);
 
 	QPixmap preview(imagePath);
-
-	this->ui->labelPicturePreview->setPixmap(preview);
+	this->ui->labelPicturePreview->setPixmap(preview.scaled(DrawArea::PROPORTION, DrawArea::PROPORTION));
 }

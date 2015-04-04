@@ -84,6 +84,9 @@
          <property name="text">
           <string>&lt;labelPicturePreview&gt;</string>
          </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
