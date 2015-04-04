@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QCloseEvent>
 #include <QDebug>
 #include <QDirIterator>
 #include <QFileDialog>
@@ -81,9 +82,12 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 
 void MainWindow::on_actionNewLevel_triggered()
 {
-	this->closeLevel();
+	if (!this->closeLevel())
+		return;
 
 	QString name = QInputDialog::getText(this, "Новый уровень", "Введите имя нового уровня");
+	if (name.isEmpty())
+		return;
 
 	this->level = new Level(this->elements, name, QSize(Level::WIDTH, Level::HEIGHT));
 
@@ -95,6 +99,9 @@ void MainWindow::on_actionNewLevel_triggered()
 void MainWindow::on_actionSaveLevel_triggered()
 {
 	QString saveName = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(), LEVEL_FILE_FILTER);
+	if (saveName.isEmpty())
+		return;
+
 	QString name;
 	QString path;
 
@@ -107,9 +114,13 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 void MainWindow::on_actionLoadLevel_triggered()
 {
-	this->closeLevel();
+	if (!this->closeLevel())
+		return;
 
 	QString url = QFileDialog::getOpenFileName(this, tr("Открыть"), QString(), LEVEL_FILE_FILTER);
+	if (url.isEmpty())
+		return;
+
 	QString name;
 	QString path;
 
@@ -141,32 +152,54 @@ void MainWindow::on_buttonEraser_clicked()
 	this->drawArea->setEraser();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	if (this->closeLevel())
+	{
+		event->accept();
+	}
+	else
+	{
+		event->ignore();
+	}
+}
+
+bool MainWindow::closeLevel()
+{
+	if (this->level == nullptr)
+		return true;
+
+	bool toClose = false;
+	if (this->level->isChanged())
+	{
+		QMessageBox::StandardButton reply = QMessageBox::question(this, "Изменения", "Имеются не сохраненные изменения. Сохранить?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+		switch (reply)
+		{
+		case QMessageBox::Yes:
+			this->on_actionSaveLevel_triggered();
+			toClose = true;
+			break;
+		case QMessageBox::No:
+			toClose = true;
+			break;
+		case QMessageBox::Cancel:
+			toClose = false;
+			break;
+		default:
+			return false;
+		}
+	}
+
+	if (toClose)
+		delete this->level;
+
+	return toClose;
+}
+
 void MainWindow::bindSlots()
 {
 	QObject::connect(this->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
 	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
-}
-
-void MainWindow::closeLevel()
-{
-	if (this->level == nullptr)
-		return;
-
-	if (this->level->isChanged())
-	{
-		QMessageBox::StandardButton reply = QMessageBox::question(this, "Изменения", "Имеются не сохраненные изменения. Сохранить?", QMessageBox::Yes | QMessageBox::No);
-		switch (reply)
-		{
-		case QMessageBox::Yes:
-				this->on_actionSaveLevel_triggered();
-			break;
-		case QMessageBox::No:
-		default:
-			break;
-		}
-	}
-
-	delete this->level;
 }
 
 void MainWindow::loadElement(const QString &elementName)

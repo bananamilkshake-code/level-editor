@@ -8,6 +8,7 @@
 #include "level.h"
 #include "element.h"
 
+class QCloseEvent;
 class QListWidgetItem;
 
 namespace Ui
@@ -36,6 +37,9 @@ private slots:
 
 	void on_buttonEraser_clicked();
 
+protected:
+	void closeEvent(QCloseEvent *event) override;
+
 private:
 	enum MenuState
 	{
@@ -58,8 +62,9 @@ private:
 
 	QHash<QString, Element> elements;
 
+	bool closeLevel();
+
 	void bindSlots();
-	void closeLevel();
 	void loadElement(const QString &elementName);
 	void setMenuActionsState(MenuState state);
 	void updateElementsList();
