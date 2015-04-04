@@ -224,12 +224,15 @@ void MainWindow::setMenuActionsState(MenuState state)
 	switch (state)
 	{
 	case LevelUnloaded:
+		this->drawArea->setEnabled(false);
 		this->ui->actionSaveLevel->setEnabled(false);
 		break;
 	case LevelLoaded:
+		this->drawArea->setEnabled(true);
 		this->ui->actionSaveLevel->setEnabled(false);
 		break;
 	case LevelChanged:
+		this->drawArea->setEnabled(true);
 		this->ui->actionSaveLevel->setEnabled(true);
 		break;
 	}
