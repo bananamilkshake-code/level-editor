@@ -20,7 +20,12 @@ SOURCES += main.cpp\
     config.cpp \
     elementdescriptionwidget.cpp \
     elementdescription.cpp \
-    elementdialog.cpp
+    elementdialog.cpp \
+    numericparameterframe.cpp \
+    floatparameterframe.cpp \
+    enumparameterframe.cpp \
+    booleanparameterframe.cpp \
+    prameterbox.cpp
 
 HEADERS  += mainwindow.h \
     level.h \
@@ -29,10 +34,20 @@ HEADERS  += mainwindow.h \
     config.h \
     elementdescriptionwidget.h \
     elementdescription.h \
-    elementdialog.h
+    elementdialog.h \
+    numericparameterframe.h \
+    floatparameterframe.h \
+    enumparameterframe.h \
+    booleanparameterframe.h \
+    prameterbox.h
 
 FORMS    += mainwindow.ui \
     elementdescriptionwidget.ui \
-    elementdialog.ui
+    elementdialog.ui \
+    numericparameterframe.ui \
+    floatparameterframe.ui \
+    enumparameterframe.ui \
+    booleanparameterframe.ui \
+    prameterbox.ui
 
 QMAKE_CXXFLAGS += -std=c++11
