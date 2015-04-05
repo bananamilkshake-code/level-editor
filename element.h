@@ -3,14 +3,17 @@
 #include <QString>
 #include <QPixmap>
 
+#include <memory>
+
 class Parameter;
 
 class Element
 {
 public:
-	typedef QHash<QString, Parameter*> parameters_t;
+	typedef QHash<QString, std::shared_ptr<Parameter>> parameters_t;
 
 	static const QString EXTENSION;
+	static const char* PICTURE_FORMAT;
 
 	Element(QString name);
 	Element(QString name, QPixmap pixmap);
@@ -24,9 +27,21 @@ public:
 	void save(QString directory) const;
 
 private:
+	enum Data
+	{
+		Picture,
+		Params
+	};
+
+	static const QHash<Data, QString> DATA_FILES;
+
 	QString name;
 	QPixmap pixmap;
 	parameters_t parameters;
 
+	void loadParams(QString directory);
+	void saveParams(QString directory) const;
+
 	QString getPath(QString directory) const;
+	QString getPathOf(QString directory, Data data) const;
 };

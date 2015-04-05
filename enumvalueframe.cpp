@@ -19,5 +19,5 @@ EnumValueFrame::~EnumValueFrame()
 
 QString EnumValueFrame::getValue() const
 {
-	this->ui->boxEnumValues->currentText();
+	return this->ui->boxEnumValues->currentText();
 }

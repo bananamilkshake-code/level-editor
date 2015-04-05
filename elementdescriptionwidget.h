@@ -28,5 +28,5 @@ private:
 	QSet<ValueFrame*> valuesFrames;
 
 	void freeValuesFrames();
-	void showParameter(const Parameter *paramDesc, QString value);
+	void showParameter(const std::shared_ptr<Parameter> paramDesc, QString value);
 };

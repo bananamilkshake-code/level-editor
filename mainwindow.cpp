@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent):
 
 	this->changeMenuState(LevelUnloaded);
 	this->changeToolSelection(ActionSelect);
+
+	this->ui->centralWidget->adjustSize();
 }
 
 MainWindow::~MainWindow()
@@ -271,14 +273,14 @@ void MainWindow::loadElement(const QString &elementName)
 	Element newElement(elementName);
 	newElement.load(this->config.getElementsDictory());
 
-	this->addElement(newElement);
+	this->addElement(std::move(newElement));
 }
 
 void MainWindow::updateElementsList()
 {
 	QDir directory(this->config.getElementsDictory());
-	auto elementsDirectory = directory.entryList(QStringList("*" + Element::EXTENSION));
-	for (QString elementName : elementsDirectory)
+	auto elements = directory.entryList(QStringList("[A-Za-z]*"), QDir::Filter::Dirs);
+	for (QString elementName : elements)
 	{
 		elementName = elementName.mid(0, elementName.lastIndexOf('.'));
 		this->loadElement(elementName);

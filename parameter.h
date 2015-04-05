@@ -11,8 +11,8 @@ public:
 		TypeEnum
 	};
 
-	Parameter(QString name);
-	~Parameter();
+	explicit Parameter(QString name);
+	virtual ~Parameter();
 
 	QString getName() const;
 

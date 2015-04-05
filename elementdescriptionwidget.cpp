@@ -39,7 +39,7 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, const QHash<
 	{
 		paramIter.next();
 
-		const Parameter *paramDesc = elementDesc.getParameters().constFind(paramIter.key()).value();
+		std::shared_ptr<Parameter> paramDesc = elementDesc.getParameters().constFind(paramIter.key()).value();
 
 		this->showParameter(paramDesc, paramIter.value());
 	}
@@ -56,17 +56,17 @@ void ElementDescriptionWidget::freeValuesFrames()
 	this->valuesFrames.clear();
 }
 
-void ElementDescriptionWidget::showParameter(const Parameter *paramDesc, QString value)
+void ElementDescriptionWidget::showParameter(const std::shared_ptr<Parameter> paramDesc, QString value)
 {
 	ValueFrame *parameterFrame = nullptr;
 
 	switch (paramDesc->getType())
 	{
 	case Parameter::TypeEnum:
-		parameterFrame = new EnumValueFrame(this, dynamic_cast<const EnumParameter*>(paramDesc), value);
+		parameterFrame = new EnumValueFrame(this, dynamic_cast<const EnumParameter*>(paramDesc.get()), value);
 		break;
 	case Parameter::TypeFloat:
-		parameterFrame = new FloatValueFrame(this, dynamic_cast<const FloatParameter*>(paramDesc), value);
+		parameterFrame = new FloatValueFrame(this, dynamic_cast<const FloatParameter*>(paramDesc.get()), value);
 		break;
 	}
 

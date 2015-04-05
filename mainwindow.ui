@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
-    <height>488</height>
+    <width>589</width>
+    <height>445</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,7 +108,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>806</width>
+     <width>589</width>
      <height>21</height>
     </rect>
    </property>
@@ -127,6 +127,7 @@
     </property>
     <addaction name="actionAddElement"/>
     <addaction name="actionChangeElement"/>
+    <addaction name="action"/>
    </widget>
    <addaction name="menuAction"/>
    <addaction name="menuEditor"/>
@@ -151,10 +152,21 @@
    <property name="text">
     <string>Добавить элемент...</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionChangeElement">
    <property name="text">
     <string>Изменить выбранный элемент</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Обновить информацию об элементах</string>
    </property>
   </action>
  </widget>
