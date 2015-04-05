@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGroupBox>
+#include <QPoint>
 #include <QSet>
 
 #include "element.h"
@@ -20,7 +21,7 @@ public:
 	explicit ElementDescriptionWidget(QWidget *parent = 0);
 	~ElementDescriptionWidget();
 
-	void showElement(const ElementDesc &desc, const QHash<QString, Element> &elements);
+	void showElement(const ElementDesc &desc, QPoint position, const QHash<QString, Element> &elements);
 
 private:
 	Ui::LevelDescriptionWidget *ui;

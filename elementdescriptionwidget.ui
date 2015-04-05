@@ -36,7 +36,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="labelPosition">
        <property name="text">
-        <string>Позиция</string>
+        <string>Позиция:</string>
        </property>
       </widget>
      </item>

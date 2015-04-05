@@ -25,9 +25,10 @@ ElementDescriptionWidget::~ElementDescriptionWidget()
 	delete ui;
 }
 
-void ElementDescriptionWidget::showElement(const ElementDesc &desc, const QHash<QString, Element> &elements)
+void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint position, const QHash<QString, Element> &elements)
 {
 	this->ui->labelElementName->setText(desc.getName());
+	this->ui->labelPositionValue->setText(QString("%1 x; %2 y").arg(QString::number(position.x()), QString::number(position.y())));
 
 	this->freeValuesFrames();
 

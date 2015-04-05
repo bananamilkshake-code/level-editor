@@ -20,6 +20,4 @@ void Config::setElementsDictory(const QString &value)
 }
 
 void Config::update()
-{
-
-}
+{}
