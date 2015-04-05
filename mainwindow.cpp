@@ -64,6 +64,8 @@ void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
 	this->level->add(element.value(), position);
 
 	this->changeMenuState(LevelChanged);
+
+	this->selectElement(position);
 }
 
 void MainWindow::placeLoadedElement(const QString &name, QPoint position)
