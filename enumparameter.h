@@ -11,6 +11,7 @@ public:
 	~EnumParameter();
 
 	Type getType() const override;
+	QString getDefault() const override;
 
 	const QStringList& getValues() const;
 

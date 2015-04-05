@@ -15,7 +15,7 @@ public:
 	static const QString EXTENSION;
 	static const char* PICTURE_FORMAT;
 
-	Element(QString name);
+	explicit Element(QString name);
 	Element(QString name, QPixmap pixmap);
 	~Element();
 

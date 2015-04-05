@@ -5,18 +5,18 @@
 #include <QDir>
 #include <QFile>
 
+#include "parameter.h"
+
 const QSize Level::SIZE = QSize(20, 15);
 
-Level::Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, QSize size):
-	elementsDescriptions(elementsDescriptions),
+Level::Level(const QString &name, QSize size):
 	name(name),
 	isSaved(false)
 {
 	this->init(size);
 }
 
-Level::Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, const QString &path):
-	elementsDescriptions(elementsDescriptions),
+Level::Level(const QString &name, const QString &path):
 	name(name),
 	path(path),
 	isSaved(true)
@@ -28,7 +28,7 @@ Level::~Level()
 void Level::init(QSize size)
 {
 	std::vector<ElementDesc> record;
-	record.assign(size.width(), ElementDesc(QString()));
+	record.assign(size.width(), ElementDesc(QString(), QHash<QString, QString>()));
 	this->elements.assign(size.height(), record);
 }
 
@@ -36,7 +36,10 @@ void Level::load()
 {
 	QFile file(path + QDir::separator() + name);
 	if (!file.exists())
-		throw "File not exists";
+	{
+		qDebug() << "File with level " << name << " does not exist";
+		return;
+	}
 
 	QDataStream stream(&file);
 	stream.device()->open(QIODevice::ReadOnly);
@@ -55,7 +58,7 @@ void Level::load()
 			QString name;
 			stream >> name;
 
-			this->elements[h][w] = ElementDesc(name);
+			this->elements[h][w] = ElementDesc(name, QHash<QString, QString>());
 
 			emit elementLoaded(name, QPoint(w, h));
 		}
@@ -89,9 +92,15 @@ bool Level::isChanged() const
 	return !this->isSaved;
 }
 
-void Level::add(const QString &element, QPoint place)
+void Level::add(const Element &element, QPoint place)
 {
-	this->elements[place.y()][place.x()] = ElementDesc(element);
+	QHash<QString, QString> paramsValues;
+	for (auto param : element.getParameters())
+	{
+		paramsValues[param->getName()] = param->getDefault();
+	}
+
+	this->elements[place.y()][place.x()] = ElementDesc(element.getName(), paramsValues);
 
 	this->isSaved = false;
 }

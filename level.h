@@ -18,8 +18,8 @@ class Level : public QObject
 public:
 	static const QSize SIZE;
 
-	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, QSize size);
-	Level(const QHash<QString, Element> &elementsDescriptions, const QString &name, const QString &path);
+	Level(const QString &name, QSize size);
+	Level(const QString &name, const QString &path);
 	virtual ~Level();
 
 	const ElementDesc& select(QPoint position);
@@ -27,7 +27,7 @@ public:
 	bool isNew() const;
 	bool isChanged() const;
 
-	void add(const QString &element, QPoint place);
+	void add(const Element &element, QPoint place);
 	void load();
 	void save(QString newName, QString newPath);
 
@@ -36,8 +36,6 @@ signals:
 
 private:
 	std::vector<std::vector<ElementDesc>> elements;
-
-	const QHash<QString, Element> &elementsDescriptions;
 
 	QString name;
 	QString path;

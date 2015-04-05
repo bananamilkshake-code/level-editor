@@ -9,6 +9,7 @@ public:
 	~FloatParameter();
 
 	Type getType() const override;
+	QString getDefault() const override;
 
 	float getMin() const;
 	float getMax() const;

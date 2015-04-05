@@ -3,15 +3,12 @@
 #include "parameter.h"
 
 ValueFrame::ValueFrame(QWidget* parent, const Parameter *parameter, QString value):
-	QGroupBox(parent),
+	QGroupBox(parameter->getName(), parent),
 	value(value)
-{
-	this->setTitle(parameter->getName());
-}
+{}
 
 ValueFrame::~ValueFrame()
 {}
-
 
 QPair<QString, QString> ValueFrame::getChanged() const
 {

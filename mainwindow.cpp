@@ -60,7 +60,8 @@ void MainWindow::selectElement(QPoint position)
 
 void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
 {
-	this->level->add(name, position);
+	auto element = this->elements.constFind(name);
+	this->level->add(element.value(), position);
 
 	this->changeMenuState(LevelChanged);
 }
@@ -108,7 +109,7 @@ void MainWindow::on_actionNewLevel_triggered()
 	if (name.isEmpty())
 		return;
 
-	this->level = new Level(this->elements, name, Level::SIZE);
+	this->level = new Level(name, Level::SIZE);
 
 	this->changeMenuState(LevelChanged);
 
@@ -145,7 +146,7 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 	extarctNameAndPath(url, name, path);
 
-	this->level = new Level(this->elements, name, path);
+	this->level = new Level(name, path);
 
 	this->bindSlots();
 

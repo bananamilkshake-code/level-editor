@@ -31,6 +31,9 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, const QHash<
 
 	this->freeValuesFrames();
 
+	if (!elements.contains(desc.getName()))
+		return;
+
 	auto elementDesc = elements.constFind(desc.getName()).value();
 
 	auto params = desc.getParams();

@@ -23,3 +23,8 @@ Parameter::Type FloatParameter::getType() const
 {
 	return Parameter::TypeFloat;
 }
+
+QString FloatParameter::getDefault() const
+{
+	return QString::number(this->getMin(), 'g', 2);
+}

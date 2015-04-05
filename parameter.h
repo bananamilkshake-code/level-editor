@@ -17,6 +17,7 @@ public:
 	QString getName() const;
 
 	virtual Type getType() const = 0;
+	virtual QString getDefault() const = 0;
 
 private:
 	QString name;

@@ -10,6 +10,8 @@ EnumValueFrame::EnumValueFrame(QWidget *parent, const EnumParameter *parameter, 
 	ui->setupUi(this);
 
 	this->ui->boxEnumValues->addItems(parameter->getValues());
+
+	this->setTitle(parameter->getName());
 }
 
 EnumValueFrame::~EnumValueFrame()

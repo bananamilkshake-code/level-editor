@@ -1,8 +1,14 @@
 #include "elementdescription.h"
 
-ElementDesc::ElementDesc(const QString &name):
-	name(name)
+ElementDesc::ElementDesc(const QString &name, QHash<QString, QString> params):
+	name(name),
+	params(params)
 {}
+
+void ElementDesc::setParam(QString name, QString value)
+{
+	this->params[name] = value;
+}
 
 QString ElementDesc::getName() const
 {
