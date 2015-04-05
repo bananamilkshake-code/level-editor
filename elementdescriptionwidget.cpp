@@ -7,6 +7,7 @@
 #include "floatparameter.h"
 #include "floatvalueframe.h"
 #include "parameter.h"
+#include "valueframe.h"
 
 ElementDescriptionWidget::ElementDescriptionWidget(QWidget *parent):
 	QGroupBox(parent),
@@ -27,6 +28,8 @@ ElementDescriptionWidget::~ElementDescriptionWidget()
 
 void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint position, const QHash<QString, Element> &elements)
 {
+	this->position = position;
+
 	this->ui->labelElementName->setText(desc.getName());
 	this->ui->labelPositionValue->setText(QString("%1 x; %2 y").arg(QString::number(position.x()), QString::number(position.y())));
 
@@ -47,6 +50,11 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint posit
 
 		this->showParameter(paramDesc, paramIter.value());
 	}
+}
+
+void ElementDescriptionWidget::onChange(const QString &parameter, const QString &value)
+{
+	emit parameterChanged(this->getPosition(), parameter, value);
 }
 
 void ElementDescriptionWidget::freeValuesFrames()
@@ -76,5 +84,12 @@ void ElementDescriptionWidget::showParameter(const std::shared_ptr<Parameter> &p
 
 	this->ui->layoutParams->addWidget(parameterFrame);
 
+	QObject::connect(parameterFrame, SIGNAL(changed(QString,QString)), this, SLOT(onChange(QString,QString)));
+
 	this->valuesFrames.insert(parameterFrame);
+}
+
+QPoint ElementDescriptionWidget::getPosition() const
+{
+	return this->position;
 }

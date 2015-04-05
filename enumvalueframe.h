@@ -16,6 +16,9 @@ public:
 	explicit EnumValueFrame(QWidget *parent, const EnumParameter *parameter, QString value);
 	~EnumValueFrame();
 
+private slots:
+	void on_boxEnumValues_currentIndexChanged(const QString &arg1);
+
 private:
 	Ui::EnumValueFrame *ui;
 

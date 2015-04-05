@@ -25,7 +25,9 @@ public:
 	~MainWindow();
 
 public slots:
-	void selectElement(QPoint position);
+	void levelChanged();
+	void selectElement(QPoint position) const;
+	void changeParameter(QPoint position, const QString parameter, const QString newValue);
 	void placeElementOnLevel(const QString &name, QPoint position);
 	void placeLoadedElement(const QString &name, QPoint position);
 	void addElement(Element element);

@@ -35,6 +35,13 @@ void Level::init(QSize size)
 	this->elements.assign(size.height(), record);
 }
 
+void Level::setChanged()
+{
+	this->isSaved = false;
+
+	emit changed();
+}
+
 static const QString LEVEL_SIZE = "size";
 static const QString LEVEL_ELEMENTS = "elements";
 
@@ -107,17 +114,17 @@ void Level::save() const
 	sizeObject[SIZE_HEIGHT] = size.height();
 
 	QJsonArray elementsArray;
-	for (int h = 0; h < this->elements.size(); ++h)
+	for (size_t h = 0; h < this->elements.size(); ++h)
 	{
-		for (int w = 0; w < this->elements[h].size(); ++w)
+		for (size_t w = 0; w < this->elements[h].size(); ++w)
 		{
 			const ElementDesc &element = this->elements[h][w];
 			if (element.isEmpty())
 				continue;
 
 			QJsonObject elementPosition;
-			elementPosition.insert(POSITION_X, w);
-			elementPosition.insert(POSITION_Y, h);
+			elementPosition.insert(POSITION_X, qint64(w));
+			elementPosition.insert(POSITION_Y, qint64(h));
 
 			QJsonArray parametersArray;
 			QHashIterator<QString, QString> paramIterator(element.getParams());
@@ -166,9 +173,16 @@ QString Level::getFullPath() const
 	return this->path + QDir::separator() + this->name;
 }
 
-const ElementDesc& Level::select(QPoint position)
+ElementDesc& Level::select(QPoint position)
 {
 	return this->elements[position.y()][position.x()];
+}
+
+void Level::changeParameter(QPoint position, const QString parameter, const QString &newValue)
+{
+	this->select(position).setParam(parameter, newValue);
+
+	this->setChanged();
 }
 
 bool Level::isNew() const
@@ -191,5 +205,5 @@ void Level::add(const Element &element, QPoint place)
 
 	this->elements[place.y()][place.x()] = ElementDesc(element.getName(), paramsValues);
 
-	this->isSaved = false;
+	this->setChanged();
 }

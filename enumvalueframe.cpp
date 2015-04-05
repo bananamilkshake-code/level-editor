@@ -10,6 +10,7 @@ EnumValueFrame::EnumValueFrame(QWidget *parent, const EnumParameter *parameter, 
 	ui->setupUi(this);
 
 	this->ui->boxEnumValues->addItems(parameter->getValues());
+	this->ui->boxEnumValues->setCurrentText(value);
 
 	this->setTitle(parameter->getName());
 }
@@ -22,4 +23,9 @@ EnumValueFrame::~EnumValueFrame()
 QString EnumValueFrame::getValue() const
 {
 	return this->ui->boxEnumValues->currentText();
+}
+
+void EnumValueFrame::on_boxEnumValues_currentIndexChanged(const QString &)
+{
+	this->onChange();
 }

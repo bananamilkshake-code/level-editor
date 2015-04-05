@@ -14,3 +14,8 @@ QPair<QString, QString> ValueFrame::getChanged() const
 {
 	return QPair<QString, QString>(this->title(), this->getValue());
 }
+
+void ValueFrame::onChange()
+{
+	emit changed(this->title(), this->getValue());
+}

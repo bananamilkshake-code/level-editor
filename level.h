@@ -22,7 +22,8 @@ public:
 	Level(const QString &name, const QString &path);
 	virtual ~Level();
 
-	const ElementDesc& select(QPoint position);
+	ElementDesc& select(QPoint position);
+	void changeParameter(QPoint position, const QString parameter, const QString &newValue);
 
 	bool isNew() const;
 	bool isChanged() const;
@@ -33,6 +34,7 @@ public:
 	void save() const;
 
 signals:
+	void changed();
 	void elementLoaded(const QString &name, QPoint position);
 
 private:
@@ -44,6 +46,7 @@ private:
 	mutable bool isSaved;
 
 	void init(QSize size);
+	void setChanged();
 
 	QSize getSize() const;
 	QString getFullPath() const;

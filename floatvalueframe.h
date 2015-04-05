@@ -18,6 +18,9 @@ public:
 
 	QString getValue() const override;
 
+private slots:
+	void on_spinValue_valueChanged(const QString &arg1);
+
 private:
 	Ui::FloatValueFrame *ui;
 };

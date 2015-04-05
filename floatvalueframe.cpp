@@ -25,3 +25,8 @@ QString FloatValueFrame::getValue() const
 {
 	return this->ui->spinValue->text();
 }
+
+void FloatValueFrame::on_spinValue_valueChanged(const QString &)
+{
+	this->onChange();
+}

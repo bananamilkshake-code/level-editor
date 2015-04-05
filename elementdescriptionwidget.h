@@ -23,11 +23,20 @@ public:
 
 	void showElement(const ElementDesc &desc, QPoint position, const QHash<QString, Element> &elements);
 
+public slots:
+	void onChange(const QString &parameter, const QString &value);
+
+signals:
+	void parameterChanged(QPoint position, const QString &parameter, const QString &newValue);
+
 private:
 	Ui::LevelDescriptionWidget *ui;
 
+	QPoint position;
 	QSet<ValueFrame*> valuesFrames;
 
 	void freeValuesFrames();
 	void showParameter(const std::shared_ptr<Parameter> &paramDesc, QString value);
+
+	QPoint getPosition() const;
 };

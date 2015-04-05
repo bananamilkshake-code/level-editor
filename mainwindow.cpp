@@ -49,21 +49,29 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::selectElement(QPoint position)
+void MainWindow::levelChanged()
 {
-	auto &elementDesc = this->level->select(position);
+	this->changeMenuState(LevelChanged);
+}
+
+void MainWindow::selectElement(QPoint position) const
+{
+	ElementDesc &elementDesc = this->level->select(position);
 
 	qDebug() << "Element selected " << elementDesc.getName();
 
 	this->ui->groupBoxElementDesc->showElement(elementDesc, position, this->elements);
 }
 
+void MainWindow::changeParameter(QPoint position, const QString parameter, const QString newValue)
+{
+	this->level->changeParameter(position, parameter, newValue);
+}
+
 void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
 {
 	auto element = this->elements.constFind(name);
 	this->level->add(element.value(), position);
-
-	this->changeMenuState(LevelChanged);
 
 	this->selectElement(position);
 }
@@ -113,7 +121,7 @@ void MainWindow::on_actionNewLevel_triggered()
 
 	this->level = new Level(name, Level::SIZE);
 
-	this->changeMenuState(LevelChanged);
+	this->levelChanged();
 
 	this->bindSlots();
 }
@@ -255,6 +263,9 @@ void MainWindow::bindSlots()
 	QObject::connect(this->drawArea, SIGNAL(elementSelected(QPoint)), this, SLOT(selectElement(QPoint)));
 
 	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
+	QObject::connect(this->level, SIGNAL(changed()), this, SLOT(levelChanged()));
+
+	QObject::connect(this->ui->groupBoxElementDesc, SIGNAL(parameterChanged(QPoint,QString,QString)), this, SLOT(changeParameter(QPoint,QString,QString)));
 }
 
 void MainWindow::changeMenuState(MenuState state)
