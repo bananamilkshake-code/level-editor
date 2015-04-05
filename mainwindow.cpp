@@ -53,7 +53,7 @@ void MainWindow::selectElement(QPoint position)
 
 	qDebug() << "Element selected " << elementDesc.getName();
 
-	this->ui->groupBoxElementDesc->showElement(elementDesc);
+	this->ui->groupBoxElementDesc->showElement(elementDesc, this->elements);
 }
 
 void MainWindow::placeElementOnLevel(const QString &name, QPoint position)

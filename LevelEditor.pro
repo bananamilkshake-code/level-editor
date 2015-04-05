@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = WargamingLevelDesigner
+TARGET = LevelEditor
 TEMPLATE = app
 
 
@@ -21,11 +21,12 @@ SOURCES += main.cpp\
     elementdescriptionwidget.cpp \
     elementdescription.cpp \
     elementdialog.cpp \
-    numericparameterframe.cpp \
-    floatparameterframe.cpp \
-    enumparameterframe.cpp \
-    booleanparameterframe.cpp \
-    prameterbox.cpp
+    parameter.cpp \
+    enumparameter.cpp \
+    valueframe.cpp \
+    enumvalueframe.cpp \
+    floatvalueframe.cpp \
+    floatparameter.cpp
 
 HEADERS  += mainwindow.h \
     level.h \
@@ -35,19 +36,17 @@ HEADERS  += mainwindow.h \
     elementdescriptionwidget.h \
     elementdescription.h \
     elementdialog.h \
-    numericparameterframe.h \
-    floatparameterframe.h \
-    enumparameterframe.h \
-    booleanparameterframe.h \
-    prameterbox.h
+    parameter.h \
+    enumparameter.h \
+    valueframe.h \
+    enumvalueframe.h \
+    floatvalueframe.h \
+    floatparameter.h
 
 FORMS    += mainwindow.ui \
     elementdescriptionwidget.ui \
     elementdialog.ui \
-    numericparameterframe.ui \
-    floatparameterframe.ui \
-    enumparameterframe.ui \
-    booleanparameterframe.ui \
-    prameterbox.ui
+    enumvalueframe.ui \
+    floatvalueframe.ui
 
 QMAKE_CXXFLAGS += -std=c++11

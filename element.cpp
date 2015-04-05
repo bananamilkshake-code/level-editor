@@ -26,6 +26,11 @@ const QPixmap& Element::getPixmap() const
 	return this->pixmap;
 }
 
+const Element::parameters_t& Element::getParameters() const
+{
+	return this->parameters;
+}
+
 void Element::load(QString directory)
 {
 	QFile file(this->getPath(directory));

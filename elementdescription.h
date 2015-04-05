@@ -1,14 +1,17 @@
 #pragma once
 
+#include <QHash>
 #include <QString>
 
 struct ElementDesc
 {
-private:
-	QString name;
-
 public:
 	ElementDesc(const QString &name);
 
 	QString getName() const;
+	const QHash<QString, QString> getParams() const;
+
+private:
+	QString name;
+	QHash<QString, QString> params;
 };

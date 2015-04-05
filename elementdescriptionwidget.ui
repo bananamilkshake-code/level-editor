@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>174</width>
+    <height>75</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,24 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPosition">
+       <property name="text">
+        <string>Позиция</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelPositionValue">
+       <property name="text">
+        <string>&lt;labelPositionValue&gt;</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="layoutParams"/>
    </item>
   </layout>
  </widget>
