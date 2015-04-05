@@ -101,27 +101,56 @@ void Level::saveAs(QString newName, QString newPath)
 
 void Level::save() const
 {
-	QFile file(this->getFullPath());
-	QDataStream stream(&file);
-	stream.device()->open(QIODevice::WriteOnly);
-
 	QSize size = this->getSize();
+	QJsonObject sizeObject;
+	sizeObject[SIZE_WIDTH] = size.width();
+	sizeObject[SIZE_HEIGHT] = size.height();
 
-	stream << size.width() << size.height();
-
-	for (int h = 0; h < size.height(); ++h)
+	QJsonArray elementsArray;
+	for (int h = 0; h < this->elements.size(); ++h)
 	{
-		for (int w = 0; w < size.width(); ++w)
+		for (int w = 0; w < this->elements[h].size(); ++w)
 		{
-			stream << this->elements[h][w].getName();
+			const ElementDesc &element = this->elements[h][w];
+			if (element.isEmpty())
+				continue;
+
+			QJsonObject elementPosition;
+			elementPosition.insert(POSITION_X, w);
+			elementPosition.insert(POSITION_Y, h);
+
+			QJsonArray parametersArray;
+			QHashIterator<QString, QString> paramIterator(element.getParams());
+			while (paramIterator.hasNext())
+			{
+				paramIterator.next();
+
+				QJsonObject parameterObject;
+				parameterObject.insert(PARAMETER_NAME, paramIterator.key());
+				parameterObject.insert(PARAMETER_VALUE, paramIterator.value());
+				parametersArray.push_back(parameterObject);
+			}
+
+			QJsonObject elementObject;
+			elementObject.insert(LEVEL_ELEMENT_NAME, element.getName());
+			elementObject.insert(LEVEL_ELEMENT_POSITION, elementPosition);
+			elementObject.insert(LEVEL_ELEMENT_PARAMETERS, parametersArray);
+			elementsArray.push_back(elementObject);
 		}
 	}
+
+	QJsonObject data;
+	data.insert(LEVEL_SIZE, sizeObject);
+	data.insert(LEVEL_ELEMENTS, elementsArray);
+
+	QFile file(this->getFullPath());
+	file.open(QFile::WriteOnly);
+	file.write(QJsonDocument(data).toJson());
+	file.close();
 
 	this->isSaved = true;
 
 	qDebug() << "Level " + this->name + " saved";
-
-	stream.device()->close();
 }
 
 QSize Level::getSize() const

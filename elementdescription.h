@@ -13,6 +13,8 @@ public:
 	QString getName() const;
 	const QHash<QString, QString> getParams() const;
 
+	bool isEmpty() const;
+
 private:
 	QString name;
 	QHash<QString, QString> params;

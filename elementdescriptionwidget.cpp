@@ -43,7 +43,7 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint posit
 	{
 		paramIter.next();
 
-		std::shared_ptr<Parameter> paramDesc = elementDesc.getParameters().constFind(paramIter.key()).value();
+		const std::shared_ptr<Parameter> &paramDesc = elementDesc.getParameters().constFind(paramIter.key()).value();
 
 		this->showParameter(paramDesc, paramIter.value());
 	}
@@ -60,7 +60,7 @@ void ElementDescriptionWidget::freeValuesFrames()
 	this->valuesFrames.clear();
 }
 
-void ElementDescriptionWidget::showParameter(const std::shared_ptr<Parameter> paramDesc, QString value)
+void ElementDescriptionWidget::showParameter(const std::shared_ptr<Parameter> &paramDesc, QString value)
 {
 	ValueFrame *parameterFrame = nullptr;
 

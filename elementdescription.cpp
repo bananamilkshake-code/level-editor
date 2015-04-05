@@ -19,3 +19,8 @@ const QHash<QString, QString> ElementDesc::getParams() const
 {
 	return this->params;
 }
+
+bool ElementDesc::isEmpty() const
+{
+	return this->name.isNull();
+}
