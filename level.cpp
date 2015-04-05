@@ -4,6 +4,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "parameter.h"
 
@@ -32,39 +35,91 @@ void Level::init(QSize size)
 	this->elements.assign(size.height(), record);
 }
 
+static const QString LEVEL_SIZE = "size";
+static const QString LEVEL_ELEMENTS = "elements";
+
+static const QString SIZE_WIDTH = "width";
+static const QString SIZE_HEIGHT = "height";
+
+static const QString LEVEL_ELEMENT_NAME = "name";
+
+static const QString LEVEL_ELEMENT_POSITION = "position";
+
+static const QString POSITION_X = "x";
+static const QString POSITION_Y = "y";
+
+static const QString LEVEL_ELEMENT_PARAMETERS = "parameters";
+
+static const QString PARAMETER_NAME = "parameter";
+static const QString PARAMETER_VALUE = "value";
+
 void Level::load()
 {
-	QFile file(path + QDir::separator() + name);
-	if (!file.exists())
+	QFile file(this->getFullPath());
+	file.open(QFile::ReadOnly);
+	QJsonDocument document = QJsonDocument::fromJson(file.readAll());
+	file.close();
+
+	QJsonObject sizeObject = document.object()[LEVEL_SIZE].toObject();
+	QSize size(sizeObject[SIZE_WIDTH].toInt(), sizeObject[SIZE_HEIGHT].toInt());
+	this->init(size);
+
+	QJsonArray elementsArray = document.object()[LEVEL_ELEMENTS].toArray();
+	for (QJsonValueRef elementRef : elementsArray)
 	{
-		qDebug() << "File with level " << name << " does not exist";
-		return;
-	}
+		QJsonObject elementObject = elementRef.toObject();
 
-	QDataStream stream(&file);
-	stream.device()->open(QIODevice::ReadOnly);
+		QString name = elementObject[LEVEL_ELEMENT_NAME].toString();
 
-	size_t width = 0;
-	size_t height = 0;
+		QJsonObject positionObject = elementObject[LEVEL_ELEMENT_POSITION].toObject();
+		QPoint position(positionObject[POSITION_X].toInt(), positionObject[POSITION_Y].toInt());
 
-	stream >> width >> height;
-
-	this->init(QSize(width, height));
-
-	for (size_t h = 0; h < height; ++h)
-	{
-		for (size_t w = 0; w < width; ++w)
+		QHash<QString, QString> parameters;
+		QJsonArray parametersArray = elementObject[LEVEL_ELEMENT_PARAMETERS].toArray();
+		for (QJsonValueRef parameterRef : parametersArray)
 		{
-			QString name;
-			stream >> name;
+			QJsonObject parameterObject = parameterRef.toObject();
 
-			this->elements[h][w] = ElementDesc(name, QHash<QString, QString>());
-
-			emit elementLoaded(name, QPoint(w, h));
+			parameters.insert(parameterObject[PARAMETER_NAME].toString(), parameterObject[PARAMETER_VALUE].toString());
 		}
+
+		this->elements[position.y()][position.x()] = ElementDesc(name, parameters);
+
+		emit elementLoaded(name, position);
 	}
 
 	qDebug() << "Level " + this->name + " loaded";
+}
+
+void Level::saveAs(QString newName, QString newPath)
+{
+	this->name = newName;
+	this->path = newPath;
+
+	this->save();
+}
+
+void Level::save() const
+{
+	QFile file(this->getFullPath());
+	QDataStream stream(&file);
+	stream.device()->open(QIODevice::WriteOnly);
+
+	QSize size = this->getSize();
+
+	stream << size.width() << size.height();
+
+	for (int h = 0; h < size.height(); ++h)
+	{
+		for (int w = 0; w < size.width(); ++w)
+		{
+			stream << this->elements[h][w].getName();
+		}
+	}
+
+	this->isSaved = true;
+
+	qDebug() << "Level " + this->name + " saved";
 
 	stream.device()->close();
 }
@@ -75,6 +130,11 @@ QSize Level::getSize() const
 	size_t width = (height > 0) ? this->elements[0].size() : 0;
 
 	return QSize(width, height);
+}
+
+QString Level::getFullPath() const
+{
+	return this->path + QDir::separator() + this->name;
 }
 
 const ElementDesc& Level::select(QPoint position)
@@ -103,32 +163,4 @@ void Level::add(const Element &element, QPoint place)
 	this->elements[place.y()][place.x()] = ElementDesc(element.getName(), paramsValues);
 
 	this->isSaved = false;
-}
-
-void Level::save(QString newName, QString newPath)
-{
-	this->name = newName;
-	this->path = newPath;
-
-	QFile file(this->path + QDir::separator() + this->name);
-	QDataStream stream(&file);
-	stream.device()->open(QIODevice::WriteOnly);
-
-	QSize size = this->getSize();
-
-	stream << size.width() << size.height();
-
-	for (int h = 0; h < size.height(); ++h)
-	{
-		for (int w = 0; w < size.width(); ++w)
-		{
-			stream << this->elements[h][w].getName();
-		}
-	}
-
-	this->isSaved = true;
-
-	qDebug() << "Level " + this->name + " saved";
-
-	stream.device()->close();
 }

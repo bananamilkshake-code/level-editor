@@ -29,7 +29,8 @@ public:
 
 	void add(const Element &element, QPoint place);
 	void load();
-	void save(QString newName, QString newPath);
+	void saveAs(QString newName, QString newPath);
+	void save() const;
 
 signals:
 	void elementLoaded(const QString &name, QPoint position);
@@ -40,9 +41,10 @@ private:
 	QString name;
 	QString path;
 
-	bool isSaved;
+	mutable bool isSaved;
 
 	void init(QSize size);
 
 	QSize getSize() const;
+	QString getFullPath() const;
 };

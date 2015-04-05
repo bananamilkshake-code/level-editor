@@ -129,7 +129,7 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 	extarctNameAndPath(saveName, name, path);
 
-	this->level->save(name, path);
+	this->level->saveAs(name, path);
 
 	this->changeMenuState(LevelLoaded);
 }
