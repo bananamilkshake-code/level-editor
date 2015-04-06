@@ -72,8 +72,6 @@ private:
 
 	Ui::MainWindow *ui;
 
-	DrawArea *drawArea;
-
 	Level *level;
 
 	QHash<QString, Element> elements;

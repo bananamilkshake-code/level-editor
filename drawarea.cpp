@@ -14,15 +14,12 @@ QPixmap DrawArea::eraserPixmap()
 	return eraserPixmap;
 }
 
-DrawArea::DrawArea(QWidget *parent, QSize size):
+DrawArea::DrawArea(QWidget *parent):
 	QFrame(parent),
 	ERASER(QString(), eraserPixmap()),
 	currentElement(&ERASER),
-	levelProportions(size),
 	needDraw(false)
 {
-	this->resize(size);
-
 	this->setAttribute(Qt::WA_OpaquePaintEvent, true);
 }
 
@@ -49,6 +46,8 @@ void DrawArea::setEraser()
 void DrawArea::setProportions(QSize newProportions)
 {
 	this->levelProportions = newProportions;
+
+	this->resize(this->levelProportions * PROPORTION);
 }
 
 void DrawArea::startSelecting()
