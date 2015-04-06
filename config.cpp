@@ -3,7 +3,7 @@
 const QString Config::ELEMENT_PICTURE_NAME = "pic.png";
 
 Config::Config():
-	elementsDictory("C:\\elements")
+	elementsDictory(".\\elements")
 {}
 
 Config::~Config()
