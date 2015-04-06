@@ -13,10 +13,10 @@ public:
 	DrawArea(QWidget *parent = 0);
 	~DrawArea();
 
+	void drawElement(const Element &element, QPoint position);
 	void setCurrentElement(const Element &element);
-	void setCurrentPosition(const QPoint &position);
 	void setEraser();
-	void setProportions(QSize newProportions);
+	void prepareForLevel(QSize newProportions);
 	void startSelecting();
 
 signals:
@@ -31,11 +31,10 @@ protected:
 private:
 	const Element ERASER;
 
-	QPoint cursorPosition;
-
 	const Element *currentElement;
 
 	QSize levelProportions;
+	QImage image;
 
 	bool needDraw;
 

@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent):
 {
 	this->ui->setupUi(this);
 
-	this->ui->drawArea->setProportions(Level::SIZE);
+	this->ui->drawArea->prepareForLevel(Level::SIZE);
 
 	this->updateElementsList();
 
@@ -61,6 +61,8 @@ void MainWindow::selectElement(QPoint position) const
 
 void MainWindow::changeParameter(QPoint position, const QString parameter, const QString newValue)
 {
+	qDebug() << "Parameter " << parameter << " for element on position " << position << " changed to " << newValue;
+
 	this->level->changeParameter(position, parameter, newValue);
 }
 
@@ -82,10 +84,7 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 
 	qDebug() << "Element with name " << name;
 
-	this->ui->drawArea->setCurrentElement(element_iter.value());
-	this->ui->drawArea->setCurrentPosition(position);
-
-	this->ui->drawArea->repaint();
+	this->ui->drawArea->drawElement(element_iter.value(), position);
 }
 
 void MainWindow::addElement(Element element)
@@ -117,10 +116,9 @@ void MainWindow::on_actionNewLevel_triggered()
 
 	this->level = new Level(name, Level::SIZE);
 
-	this->ui->drawArea->setProportions(Level::SIZE);
+	this->ui->drawArea->prepareForLevel(Level::SIZE);
 
 	this->levelChanged();
-
 	this->bindSlots();
 }
 
@@ -132,7 +130,6 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 	QString name;
 	QString path;
-
 	extarctNameAndPath(saveName, name, path);
 
 	this->level->saveAs(name, path);
@@ -158,7 +155,6 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 	QString name;
 	QString path;
-
 	extarctNameAndPath(url, name, path);
 
 	this->level = new Level(name, path);
@@ -167,6 +163,7 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 	this->level->load();
 
+	this->printLevel();
 	this->changeMenuState(LevelLoaded);
 }
 
@@ -267,7 +264,6 @@ void MainWindow::bindSlots()
 	QObject::connect(this->ui->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
 	QObject::connect(this->ui->drawArea, SIGNAL(elementSelected(QPoint)), this, SLOT(selectElement(QPoint)));
 
-	QObject::connect(this->level, SIGNAL(elementLoaded(QString, QPoint)), this, SLOT(placeLoadedElement(QString, QPoint)));
 	QObject::connect(this->level, SIGNAL(changed()), this, SLOT(levelChanged()));
 
 	QObject::connect(this->ui->groupBoxElementDesc, SIGNAL(parameterChanged(QPoint,QString,QString)), this, SLOT(changeParameter(QPoint,QString,QString)));
@@ -278,11 +274,6 @@ void MainWindow::changeMenuState(MenuState state)
 	this->ui->drawArea->setEnabled(LevelUnloaded != state);
 	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
 	this->ui->actionSaveAs->setEnabled(LevelChanged == state);
-
-	if (state == LevelLoaded)
-	{
-		this->ui->drawArea->setProportions(this->level->getSize());
-	}
 }
 
 void MainWindow::changeToolSelection(ToolSelection toolSelection)
@@ -299,6 +290,32 @@ void MainWindow::loadElement(const QString &elementName)
 	newElement.load(this->config.getElementsDictory());
 
 	this->addElement(std::move(newElement));
+}
+
+void MainWindow::printLevel()
+{
+	this->ui->drawArea->prepareForLevel(this->level->getSize());
+
+	QSize levelSize = this->level->getSize();
+	for (int x = 0; x < levelSize.width(); ++x)
+	{
+		for (int y = 0; y < levelSize.height(); ++y)
+		{
+			QPoint position(x, y);
+			auto element = this->level->select(position);
+			if (element.isEmpty())
+				continue;
+
+			auto elementIter = this->elements.constFind(element.getName());
+			if (elementIter == this->elements.end())
+			{
+				qDebug() << "No element with name " << element.getName();
+				continue;
+			}
+
+			this->ui->drawArea->drawElement(elementIter.value(), position);
+		}
+	}
 }
 
 void MainWindow::updateElementsList()

@@ -91,8 +91,6 @@ void Level::load()
 		}
 
 		this->elements[position.y()][position.x()] = ElementDesc(name, parameters);
-
-		emit elementLoaded(name, position);
 	}
 
 	qDebug() << "Level " + this->name + " loaded";

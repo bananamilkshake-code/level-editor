@@ -19,12 +19,21 @@ DrawArea::DrawArea(QWidget *parent):
 	ERASER(QString(), eraserPixmap()),
 	currentElement(&ERASER),
 	needDraw(false)
-{
-	this->setAttribute(Qt::WA_OpaquePaintEvent, true);
-}
+{}
 
 DrawArea::~DrawArea()
 {}
+
+void DrawArea::drawElement(const Element &element, QPoint position)
+{
+	qDebug() << "Printing element " << element.getName();
+
+	QPainter painter(&this->image);
+	QPoint imagePosition = position * this->getScale();
+	painter.drawPixmap(imagePosition, element.getPixmap());
+
+	this->update();
+}
 
 void DrawArea::setCurrentElement(const Element &element)
 {
@@ -33,21 +42,21 @@ void DrawArea::setCurrentElement(const Element &element)
 	this->currentElement = &element;
 }
 
-void DrawArea::setCurrentPosition(const QPoint &position)
-{
-	this->cursorPosition = position;
-}
-
 void DrawArea::setEraser()
 {
 	this->setCurrentElement(ERASER);
 }
 
-void DrawArea::setProportions(QSize newProportions)
+void DrawArea::prepareForLevel(QSize newProportions)
 {
 	this->levelProportions = newProportions;
 
 	this->resize(this->levelProportions * PROPORTION);
+
+	this->image = QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
+
+	QPainter painter(&this->image);
+	painter.fillRect(this->image.rect(), Qt::black);
 }
 
 void DrawArea::startSelecting()
@@ -57,16 +66,8 @@ void DrawArea::startSelecting()
 
 void DrawArea::paintEvent(QPaintEvent *)
 {
-	if (!this->needDraw)
-		return;
-
-	int proportion = this->getScale();
-	QPoint imagePosition = this->cursorPosition * proportion;
-
-	qDebug() << "Image position " << imagePosition.x() << " " << imagePosition.y();
-
 	QPainter painter(this);
-	painter.drawPixmap(imagePosition.x(), imagePosition.y(), this->currentElement->getPixmap());
+	painter.drawImage(this->rect(), this->image);
 }
 
 void DrawArea::mousePressEvent(QMouseEvent *eventPress)
@@ -76,16 +77,17 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 
 	qDebug() << "Mouse position " << position.x() << " " << position.y();
 
-	this->setCurrentPosition(QPoint(position.x() / proportion, position.y() / proportion));
+	QPoint elementPosition = QPoint(position.x() / proportion, position.y() / proportion);
 
 	if (this->needDraw)
 	{
-		this->update();
-		emit elementPlaced(this->currentElement->getName(), this->cursorPosition);
+		this->drawElement(*this->currentElement, elementPosition);
+
+		emit elementPlaced(this->currentElement->getName(), elementPosition);
 	}
 	else
 	{
-		emit elementSelected(this->cursorPosition);
+		emit elementSelected(elementPosition);
 	}
 }
 

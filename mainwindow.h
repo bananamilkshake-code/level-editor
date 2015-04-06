@@ -82,5 +82,6 @@ private:
 	void changeMenuState(MenuState state);
 	void changeToolSelection(ToolSelection toolSelection);
 	void loadElement(const QString &elementName);
+	void printLevel();
 	void updateElementsList();
 };

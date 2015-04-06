@@ -37,7 +37,6 @@ public:
 
 signals:
 	void changed();
-	void elementLoaded(const QString &name, QPoint position);
 
 private:
 	std::vector<std::vector<ElementDesc>> elements;
