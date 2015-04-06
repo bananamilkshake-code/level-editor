@@ -36,6 +36,7 @@ public slots:
 private slots:
 	void on_actionNewLevel_triggered();
 	void on_actionSaveLevel_triggered();
+	void on_actionSaveAs_triggered();
 	void on_actionLoadLevel_triggered();
 	void on_actionAddElement_triggered();
 	void on_actionChangeElement_triggered();

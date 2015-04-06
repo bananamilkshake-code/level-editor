@@ -142,6 +142,13 @@ void MainWindow::on_actionSaveLevel_triggered()
 	this->changeMenuState(LevelLoaded);
 }
 
+void MainWindow::on_actionSaveAs_triggered()
+{
+	this->level->save();
+
+	this->changeMenuState(LevelLoaded);
+}
+
 void MainWindow::on_actionLoadLevel_triggered()
 {
 	if (!this->closeLevel())
@@ -272,6 +279,12 @@ void MainWindow::changeMenuState(MenuState state)
 {
 	this->drawArea->setEnabled(LevelUnloaded != state);
 	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
+	this->ui->actionSaveAs->setEnabled(LevelChanged == state);
+
+	if (state == LevelLoaded)
+	{
+		this->drawArea->setSize(this->level->getSize());
+	}
 }
 
 void MainWindow::changeToolSelection(ToolSelection toolSelection)
