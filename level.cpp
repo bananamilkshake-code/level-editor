@@ -10,7 +10,7 @@
 
 #include "parameter.h"
 
-const QSize Level::SIZE = QSize(20, 15);
+const QSize Level::SIZE = QSize(30, 15);
 
 Level::Level(const QString &name, QSize size):
 	name(name),
