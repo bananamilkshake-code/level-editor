@@ -33,6 +33,8 @@ public:
 	void saveAs(QString newName, QString newPath);
 	void save() const;
 
+	QSize getSize() const;
+
 signals:
 	void changed();
 	void elementLoaded(const QString &name, QPoint position);
@@ -47,7 +49,5 @@ private:
 
 	void init(QSize size);
 	void setChanged();
-
-	QSize getSize() const;
 	QString getFullPath() const;
 };
