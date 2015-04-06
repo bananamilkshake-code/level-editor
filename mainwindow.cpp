@@ -114,16 +114,14 @@ void MainWindow::information(const QString &text) const
 	qDebug() << text;
 }
 
+static const QString LEVEL_STANDART_NAME = "newlevel";
+
 void MainWindow::on_actionNewLevel_triggered()
 {
 	if (!this->closeLevel())
 		return;
 
-	QString name = QInputDialog::getText(this, "Новый уровень", "Введите имя нового уровня");
-	if (name.isEmpty())
-		return;
-
-	this->level = new Level(name, Level::SIZE);
+	this->level = new Level(LEVEL_STANDART_NAME, Level::SIZE);
 
 	this->ui->drawArea->prepareForLevel(Level::SIZE);
 
@@ -132,6 +130,19 @@ void MainWindow::on_actionNewLevel_triggered()
 }
 
 void MainWindow::on_actionSaveLevel_triggered()
+{
+	if (this->level->isNew())
+	{
+		this->on_actionSaveAs_triggered();
+		return;
+	}
+
+	this->level->save();
+
+	this->changeMenuState(LevelLoaded);
+}
+
+void MainWindow::on_actionSaveAs_triggered()
 {
 	QString saveName = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(), LEVEL_FILE_FILTER);
 	if (saveName.isEmpty())
@@ -142,13 +153,6 @@ void MainWindow::on_actionSaveLevel_triggered()
 	extarctNameAndPath(saveName, name, path);
 
 	this->level->saveAs(name, path);
-
-	this->changeMenuState(LevelLoaded);
-}
-
-void MainWindow::on_actionSaveAs_triggered()
-{
-	this->level->save();
 
 	this->changeMenuState(LevelLoaded);
 }
