@@ -45,6 +45,11 @@ void DrawArea::setEraser()
 	this->setCurrentElement(ERASER);
 }
 
+void DrawArea::setProportions(QSize newProportions)
+{
+	this->levelProportions = newProportions;
+}
+
 void DrawArea::startSelecting()
 {
 	this->needDraw = false;
@@ -63,7 +68,10 @@ void DrawArea::paintEvent(QPaintEvent *)
 
 void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 {
-	this->setCurrentPosition(eventPress->pos() / PROPORTION);
+	int proportion = this->getScale();
+	QPoint position = eventPress->localPos().toPoint();
+
+	this->setCurrentPosition(QPoint(position.x() / proportion, position.y() / proportion));
 
 	if (this->needDraw)
 	{
@@ -75,3 +83,9 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 		emit elementSelected(this->cursorPosition);
 	}
 }
+
+int DrawArea::getScale() const
+{
+	return ceil(this->size().height() / (float) this->levelProportions.height());
+}
+

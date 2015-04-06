@@ -283,7 +283,7 @@ void MainWindow::changeMenuState(MenuState state)
 
 	if (state == LevelLoaded)
 	{
-		this->drawArea->setSize(this->level->getSize());
+		this->drawArea->setProportions(this->level->getSize());
 	}
 }
 

@@ -16,6 +16,7 @@ public:
 	void setCurrentElement(const Element &element);
 	void setCurrentPosition(const QPoint &position);
 	void setEraser();
+	void setProportions(QSize newProportions);
 	void startSelecting();
 
 signals:
@@ -34,7 +35,11 @@ private:
 
 	const Element *currentElement;
 
+	QSize levelProportions;
+
 	bool needDraw;
 
 	static QPixmap eraserPixmap();
+
+	int getScale() const;
 };
