@@ -50,3 +50,9 @@ FORMS    += mainwindow.ui \
     floatvalueframe.ui
 
 QMAKE_CXXFLAGS += -std=c++11
+
+DISTFILES += \
+    app.rc
+
+RC_FILE += \
+	app.rc
