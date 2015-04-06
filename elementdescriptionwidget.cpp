@@ -17,6 +17,7 @@ ElementDescriptionWidget::ElementDescriptionWidget(QWidget *parent):
 
 	this->ui->labelElementName->clear();
 	this->ui->labelPositionValue->clear();
+	this->ui->labelLimitValue->clear();
 }
 
 ElementDescriptionWidget::~ElementDescriptionWidget()
