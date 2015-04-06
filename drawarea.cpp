@@ -18,6 +18,7 @@ DrawArea::DrawArea(QWidget *parent, QSize size):
 	QFrame(parent),
 	ERASER(QString(), eraserPixmap()),
 	currentElement(&ERASER),
+	levelProportions(size),
 	needDraw(false)
 {
 	this->resize(size);
@@ -60,7 +61,10 @@ void DrawArea::paintEvent(QPaintEvent *)
 	if (!this->needDraw)
 		return;
 
-	QPoint imagePosition = this->cursorPosition * PROPORTION;
+	int proportion = this->getScale();
+	QPoint imagePosition = this->cursorPosition * proportion;
+
+	qDebug() << "Image position " << imagePosition.x() << " " << imagePosition.y();
 
 	QPainter painter(this);
 	painter.drawPixmap(imagePosition.x(), imagePosition.y(), this->currentElement->getPixmap());
@@ -70,6 +74,8 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 {
 	int proportion = this->getScale();
 	QPoint position = eventPress->localPos().toPoint();
+
+	qDebug() << "Mouse position " << position.x() << " " << position.y();
 
 	this->setCurrentPosition(QPoint(position.x() / proportion, position.y() / proportion));
 
