@@ -20,7 +20,14 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QDoubleSpinBox" name="spinValue"/>
+      <widget class="QDoubleSpinBox" name="spinValue">
+       <property name="locale">
+        <locale language="C" country="AnyCountry"/>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::UpDownArrows</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

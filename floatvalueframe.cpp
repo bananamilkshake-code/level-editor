@@ -3,7 +3,7 @@
 
 #include "floatparameter.h"
 
-FloatValueFrame::FloatValueFrame(QWidget *parent, const FloatParameter *parameter, QString value):
+FloatValueFrame::FloatValueFrame(QWidget *parent, const FloatParameter *parameter, const QString &value):
 	ValueFrame(parent, parameter, value),
 	ui(new Ui::FloatValueFrame)
 {
@@ -11,7 +11,7 @@ FloatValueFrame::FloatValueFrame(QWidget *parent, const FloatParameter *paramete
 
 	this->ui->spinValue->setMinimum(parameter->getMin());
 	this->ui->spinValue->setMaximum(parameter->getMax());
-	this->ui->spinValue->setValue(value.toFloat());
+	this->ui->spinValue->setValue(value.toDouble());
 
 	this->setTitle(parameter->getName());
 }

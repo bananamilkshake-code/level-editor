@@ -13,7 +13,7 @@ class FloatValueFrame : public ValueFrame
 	Q_OBJECT
 
 public:
-	FloatValueFrame(QWidget *parent, const FloatParameter *parameter, QString value);
+	FloatValueFrame(QWidget *parent, const FloatParameter *parameter, const QString &value);
 	~FloatValueFrame();
 
 	QString getValue() const override;
