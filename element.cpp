@@ -33,19 +33,19 @@ Element::Element(QString name, QPixmap pixmap):
 Element::~Element()
 {}
 
-bool Element::usedLast(bool decrease)
+bool Element::usedLast(bool boundToZero)
 {
 	if (!this->isLimited())
 	{
 		return false;
 	}
 
-	if (decrease)
-	{
-		this->left = std::max(0, this->left - 1);
-	}
+	this->left -= 1;
 
-	return (this->left == 0);
+	if (boundToZero)
+		this->left = std::max(0, this->left);
+
+	return this->isUsedLast();
 }
 
 bool Element::releaseOne()
@@ -57,7 +57,12 @@ bool Element::releaseOne()
 
 	this->left = std::min(this->limit, this->left + 1);
 
-	return true;
+	return (this->left > 0);
+}
+
+void Element::resetLimit()
+{
+	this->left = this->limit;
 }
 
 QString Element::getName() const
@@ -139,7 +144,8 @@ void Element::load(QString directory)
 		qDebug() << QString("No picture \"%1\" for %2 element").arg(picturePath, this->getName());
 
 	this->limit = elementObject[PARAMETER_LIMIT].toInt();
-	this->left = this->limit;
+
+	this->resetLimit();
 }
 
 void Element::save(QString directory) const
@@ -148,6 +154,11 @@ void Element::save(QString directory) const
 bool Element::isLimited() const
 {
 	return this->limit > 0;
+}
+
+bool Element::isUsedLast() const
+{
+	return this->isLimited() && (this->left <= 0);
 }
 
 int Element::getLimit() const

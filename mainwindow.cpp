@@ -215,7 +215,7 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 		return;
 	}
 
-	if (elementIter.value().usedLast(false))
+	if (elementIter.value().isUsedLast())
 	{
 		this->on_buttonSelect_clicked();
 	}
@@ -313,10 +313,10 @@ void MainWindow::changeToolSelection(ToolSelection toolSelection)
 static const QColor COLOR_ITEM_UNAVAILABLE = Qt::red;
 static const QColor COLOR_ITEM_AVAILABLE = Qt::black;
 
-void MainWindow::elementUsed(const QString &elementName)
+void MainWindow::elementUsed(const QString &elementName, bool boundToZero)
 {
 	auto elementIter = this->elements.find(elementName);
-	if (elementIter == this->elements.end() || !elementIter.value().usedLast())
+	if (elementIter == this->elements.end() || !elementIter.value().usedLast(boundToZero))
 		return;
 
 	this->information("Element " + elementName + " comes to it's limit");
@@ -348,6 +348,8 @@ void MainWindow::loadElement(const QString &elementName)
 
 void MainWindow::printLevel()
 {
+	this->resetElementsUsage();
+
 	this->ui->drawArea->prepareForLevel(this->level->getSize());
 
 	QSize levelSize = this->level->getSize();
@@ -367,10 +369,18 @@ void MainWindow::printLevel()
 				continue;
 			}
 
-			this->elementUsed(element.getName());
+			this->elementUsed(element.getName(), false);
 
 			this->ui->drawArea->drawElement(elementIter.value(), position);
 		}
+	}
+}
+
+void MainWindow::resetElementsUsage()
+{
+	for (auto elementIter = this->elements.begin(); elementIter != this->elements.end(); ++elementIter)
+	{
+		elementIter.value().resetLimit();
 	}
 }
 
@@ -382,7 +392,6 @@ void MainWindow::updateElementsList()
 	auto elements = directory.entryList(QStringList("[A-Za-z]*"), QDir::Filter::Dirs);
 	for (QString elementName : elements)
 	{
-		elementName = elementName.mid(0, elementName.lastIndexOf('.'));
 		this->loadElement(elementName);
 	}
 }

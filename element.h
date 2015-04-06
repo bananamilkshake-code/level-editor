@@ -19,8 +19,9 @@ public:
 	Element(QString name, QPixmap pixmap);
 	~Element();
 
-	bool usedLast(bool decrease = true);
+	bool usedLast(bool boundToZero);
 	bool releaseOne();
+	void resetLimit();
 
 	QString getName() const;
 	const QPixmap& getPixmap() const;
@@ -30,6 +31,7 @@ public:
 	void save(QString directory) const;
 
 	bool isLimited() const;
+	bool isUsedLast() const;
 	int getLimit() const;
 
 private:

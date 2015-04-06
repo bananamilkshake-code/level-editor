@@ -83,10 +83,11 @@ private:
 	void bindSlots();
 	void changeMenuState(MenuState state);
 	void changeToolSelection(ToolSelection toolSelection);
-	void elementUsed(const QString &elementName);
+	void elementUsed(const QString &elementName, bool boundToZero = true);
 	void elementUnused(const QString &elementName);
 	void loadElement(const QString &elementName);
 	void printLevel();
+	void resetElementsUsage();
 	void updateElementsList();
 
 	QListWidgetItem* findElementItem(const QString &elementName);
