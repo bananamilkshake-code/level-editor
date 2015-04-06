@@ -144,13 +144,13 @@ void MainWindow::on_actionSaveLevel_triggered()
 
 void MainWindow::on_actionSaveAs_triggered()
 {
-	QString saveName = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(), LEVEL_FILE_FILTER);
-	if (saveName.isEmpty())
+	QString saveUrl = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(), LEVEL_FILE_FILTER);
+	if (saveUrl.isEmpty())
 		return;
 
 	QString name;
 	QString path;
-	extarctNameAndPath(saveName, name, path);
+	extarctNameAndPath(saveUrl, name, path);
 
 	this->level->saveAs(name, path);
 
@@ -162,13 +162,13 @@ void MainWindow::on_actionLoadLevel_triggered()
 	if (!this->closeLevel())
 		return;
 
-	QString url = QFileDialog::getOpenFileName(this, tr("Открыть"), QString(), LEVEL_FILE_FILTER);
-	if (url.isEmpty())
+	QString loadUrl = QFileDialog::getOpenFileName(this, tr("Открыть"), QString(), LEVEL_FILE_FILTER);
+	if (loadUrl.isEmpty())
 		return;
 
 	QString name;
 	QString path;
-	extarctNameAndPath(url, name, path);
+	extarctNameAndPath(loadUrl, name, path);
 
 	this->level = new Level(name, path);
 

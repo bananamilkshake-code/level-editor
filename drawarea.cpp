@@ -49,6 +49,8 @@ void DrawArea::setEraser()
 	this->setCurrentElement(ERASER);
 }
 
+static const QColor BACKGROUND_COLOR = Qt::black;
+
 void DrawArea::prepareForLevel(QSize newProportions)
 {
 	this->levelProportions = newProportions;
@@ -58,7 +60,7 @@ void DrawArea::prepareForLevel(QSize newProportions)
 	this->image = QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
 
 	QPainter painter(&this->image);
-	painter.fillRect(this->image.rect(), Qt::black);
+	painter.fillRect(this->image.rect(), BACKGROUND_COLOR);
 }
 
 void DrawArea::startSelecting()
