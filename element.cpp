@@ -148,7 +148,7 @@ void Element::load(QString directory)
 	this->resetLimit();
 }
 
-void Element::save(QString directory) const
+void Element::save(QString) const
 {}
 
 bool Element::isLimited() const
