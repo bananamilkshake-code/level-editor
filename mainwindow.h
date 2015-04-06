@@ -28,10 +28,11 @@ public slots:
 	void levelChanged();
 	void selectElement(QPoint position) const;
 	void changeParameter(QPoint position, const QString parameter, const QString newValue);
-	void placeElementOnLevel(const QString &name, QPoint position);
+	void placeElementOnLevel(const QString &elementName, QPoint position);
 	void placeLoadedElement(const QString &name, QPoint position);
 	void addElement(Element element);
 	void replaceElement(Element element);
+	void information(const QString &text) const;
 
 private slots:
 	void on_actionNewLevel_triggered();
@@ -40,6 +41,7 @@ private slots:
 	void on_actionLoadLevel_triggered();
 	void on_actionAddElement_triggered();
 	void on_actionChangeElement_triggered();
+	void on_actionUploadElements_triggered();
 
 	void on_listElements_itemClicked(QListWidgetItem *item);
 
@@ -81,7 +83,11 @@ private:
 	void bindSlots();
 	void changeMenuState(MenuState state);
 	void changeToolSelection(ToolSelection toolSelection);
+	void elementUsed(const QString &elementName);
+	void elementUnused(const QString &elementName);
 	void loadElement(const QString &elementName);
 	void printLevel();
 	void updateElementsList();
+
+	QListWidgetItem* findElementItem(const QString &elementName);
 };

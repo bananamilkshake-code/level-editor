@@ -54,22 +54,26 @@ void MainWindow::selectElement(QPoint position) const
 {
 	ElementDesc &elementDesc = this->level->select(position);
 
-	qDebug() << "Element selected " << elementDesc.getName();
+	this->information(QString("Element selected %1").arg(elementDesc.getName()));
 
 	this->ui->groupBoxElementDesc->showElement(elementDesc, position, this->elements);
 }
 
 void MainWindow::changeParameter(QPoint position, const QString parameter, const QString newValue)
 {
-	qDebug() << "Parameter " << parameter << " for element on position " << position << " changed to " << newValue;
+	this->information(QString("Parameter %1 for element on position (%2, %3) changed to %4").arg(parameter , QString::number(position.x()), QString::number(position.y()), newValue));
 
 	this->level->changeParameter(position, parameter, newValue);
 }
 
-void MainWindow::placeElementOnLevel(const QString &name, QPoint position)
+void MainWindow::placeElementOnLevel(const QString &elementName, QPoint position)
 {
-	auto element = this->elements.constFind(name);
-	this->level->add(element.value(), position);
+	auto element = this->elements.find(elementName);
+
+	QString replacedElement = this->level->add(element.value(), position);
+
+	this->elementUsed(elementName);
+	this->elementUnused(replacedElement);
 
 	this->selectElement(position);
 }
@@ -82,7 +86,7 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 		return;
 	}
 
-	qDebug() << "Element with name " << name;
+	this->information("Element with name " + name);
 
 	this->ui->drawArea->drawElement(element_iter.value(), position);
 }
@@ -103,6 +107,11 @@ void MainWindow::replaceElement(Element element)
 	this->elements.erase(elementIter);
 
 	this->addElement(element);
+}
+
+void MainWindow::information(const QString &text) const
+{
+	qDebug() << text;
 }
 
 void MainWindow::on_actionNewLevel_triggered()
@@ -187,6 +196,14 @@ void MainWindow::on_actionChangeElement_triggered()
 	dialog.exec();
 }
 
+void MainWindow::on_actionUploadElements_triggered()
+{
+	this->elements.clear();
+	this->ui->listElements->clear();
+
+	this->updateElementsList();
+}
+
 void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 {
 	this->changeToolSelection(ActionPaint);
@@ -194,11 +211,18 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 	auto elementIter = this->elements.find(item->text());
 	if (elementIter == this->elements.end())
 	{
-		qDebug() << "No element with name " << item->text();
+		this->information("No element with name " + item->text());
 		return;
 	}
 
-	this->ui->drawArea->setCurrentElement(elementIter.value());
+	if (elementIter.value().usedLast(false))
+	{
+		this->on_buttonSelect_clicked();
+	}
+	else
+	{
+		this->ui->drawArea->setCurrentElement(elementIter.value());
+	}
 }
 
 void MainWindow::on_buttonEraser_clicked()
@@ -263,8 +287,10 @@ void MainWindow::bindSlots()
 {
 	QObject::connect(this->ui->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
 	QObject::connect(this->ui->drawArea, SIGNAL(elementSelected(QPoint)), this, SLOT(selectElement(QPoint)));
+	QObject::connect(this->ui->drawArea, SIGNAL(information(QString)), this, SLOT(information(QString)));
 
 	QObject::connect(this->level, SIGNAL(changed()), this, SLOT(levelChanged()));
+	QObject::connect(this->level, SIGNAL(information(QString)), this, SLOT(information(QString)));
 
 	QObject::connect(this->ui->groupBoxElementDesc, SIGNAL(parameterChanged(QPoint,QString,QString)), this, SLOT(changeParameter(QPoint,QString,QString)));
 }
@@ -284,9 +310,37 @@ void MainWindow::changeToolSelection(ToolSelection toolSelection)
 	this->ui->buttonEraser->setDown(ActionErase == toolSelection);
 }
 
+static const QColor COLOR_ITEM_UNAVAILABLE = Qt::red;
+static const QColor COLOR_ITEM_AVAILABLE = Qt::black;
+
+void MainWindow::elementUsed(const QString &elementName)
+{
+	auto elementIter = this->elements.find(elementName);
+	if (elementIter == this->elements.end() || !elementIter.value().usedLast())
+		return;
+
+	this->information("Element " + elementName + " comes to it's limit");
+
+	this->findElementItem(elementName)->setTextColor(COLOR_ITEM_UNAVAILABLE);
+
+	this->on_buttonSelect_clicked();
+}
+
+void MainWindow::elementUnused(const QString &elementName)
+{
+	auto elementIter = this->elements.find(elementName);
+	if (elementIter == this->elements.end() || !elementIter.value().releaseOne())
+		return;
+
+	this->information("Element " + elementName + " must be unlocked");
+
+	this->findElementItem(elementName)->setTextColor(COLOR_ITEM_AVAILABLE);
+}
+
 void MainWindow::loadElement(const QString &elementName)
 {
 	Element newElement(elementName);
+
 	newElement.load(this->config.getElementsDictory());
 
 	this->addElement(std::move(newElement));
@@ -309,9 +363,11 @@ void MainWindow::printLevel()
 			auto elementIter = this->elements.constFind(element.getName());
 			if (elementIter == this->elements.end())
 			{
-				qDebug() << "No element with name " << element.getName();
+				this->information("No element with name " + element.getName() + " to print");
 				continue;
 			}
+
+			this->elementUsed(element.getName());
 
 			this->ui->drawArea->drawElement(elementIter.value(), position);
 		}
@@ -320,6 +376,8 @@ void MainWindow::printLevel()
 
 void MainWindow::updateElementsList()
 {
+	this->elements.insert(QString(), this->ui->drawArea->ERASER);
+
 	QDir directory(this->config.getElementsDictory());
 	auto elements = directory.entryList(QStringList("[A-Za-z]*"), QDir::Filter::Dirs);
 	for (QString elementName : elements)
@@ -327,4 +385,16 @@ void MainWindow::updateElementsList()
 		elementName = elementName.mid(0, elementName.lastIndexOf('.'));
 		this->loadElement(elementName);
 	}
+}
+
+QListWidgetItem* MainWindow::findElementItem(const QString &elementName)
+{
+	for (int itemId = 0; itemId < this->ui->listElements->count(); ++itemId)
+	{
+		QListWidgetItem *currentItem = this->ui->listElements->item(itemId);
+		if (currentItem->text() == elementName)
+			return currentItem;
+	}
+
+	return nullptr;
 }

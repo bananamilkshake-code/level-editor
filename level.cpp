@@ -93,7 +93,7 @@ void Level::load()
 		this->elements[position.y()][position.x()] = ElementDesc(name, parameters);
 	}
 
-	qDebug() << "Level " + this->name + " loaded";
+	emit information("Level " + this->name + " loaded");
 }
 
 void Level::saveAs(QString newName, QString newPath)
@@ -155,7 +155,7 @@ void Level::save() const
 
 	this->isSaved = true;
 
-	qDebug() << "Level " + this->name + " saved";
+	emit information(QString("Level %1 saved").arg(QString(this->name)));
 }
 
 QSize Level::getSize() const
@@ -193,7 +193,7 @@ bool Level::isChanged() const
 	return !this->isSaved;
 }
 
-void Level::add(const Element &element, QPoint place)
+QString Level::add(const Element &element, QPoint place)
 {
 	QHash<QString, QString> paramsValues;
 	for (auto param : element.getParameters())
@@ -201,7 +201,11 @@ void Level::add(const Element &element, QPoint place)
 		paramsValues[param->getName()] = param->getDefault();
 	}
 
+	QString toReplace = this->elements[place.y()][place.x()].getName();
+
 	this->elements[place.y()][place.x()] = ElementDesc(element.getName(), paramsValues);
 
 	this->setChanged();
+
+	return toReplace;
 }

@@ -9,6 +9,9 @@ class DrawArea : public QFrame
 	Q_OBJECT
 public:
 	static const uint8_t PROPORTION = 30;
+	static const QSize ELEMENT_SIZE;
+
+	const Element ERASER;
 
 	DrawArea(QWidget *parent = 0);
 	~DrawArea();
@@ -22,6 +25,7 @@ public:
 signals:
 	void elementPlaced(const QString &element, QPoint point);
 	void elementSelected(QPoint point);
+	void information(const QString &text);
 
 protected:
 	void paintEvent(QPaintEvent *) override;
@@ -29,8 +33,6 @@ protected:
 	void mousePressEvent(QMouseEvent *eventPress) override;
 
 private:
-	const Element ERASER;
-
 	const Element *currentElement;
 
 	QSize levelProportions;

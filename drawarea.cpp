@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
+const QSize DrawArea::ELEMENT_SIZE = QSize(DrawArea::PROPORTION, DrawArea::PROPORTION);
+
 QPixmap DrawArea::eraserPixmap()
 {
 	QPixmap eraserPixmap(PROPORTION, PROPORTION);
@@ -26,7 +28,7 @@ DrawArea::~DrawArea()
 
 void DrawArea::drawElement(const Element &element, QPoint position)
 {
-	qDebug() << "Printing element " << element.getName();
+	emit information("Printing element " + element.getName());
 
 	QPainter painter(&this->image);
 	QPoint imagePosition = position * this->getScale();
@@ -75,7 +77,7 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 	int proportion = this->getScale();
 	QPoint position = eventPress->localPos().toPoint();
 
-	qDebug() << "Mouse position " << position.x() << " " << position.y();
+	emit information(QString("Mouse position (%1, %2)").arg(QString::number(position.x()), QString::number(position.y())));
 
 	QPoint elementPosition = QPoint(position.x() / proportion, position.y() / proportion);
 

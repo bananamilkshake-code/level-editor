@@ -150,7 +150,7 @@
     </property>
     <addaction name="actionAddElement"/>
     <addaction name="actionChangeElement"/>
-    <addaction name="action"/>
+    <addaction name="actionUploadElements"/>
    </widget>
    <addaction name="menuAction"/>
    <addaction name="menuEditor"/>
@@ -187,7 +187,7 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="action">
+  <action name="actionUploadElements">
    <property name="text">
     <string>Обновить информацию об элементах</string>
    </property>

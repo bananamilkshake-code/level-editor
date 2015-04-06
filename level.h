@@ -28,7 +28,7 @@ public:
 	bool isNew() const;
 	bool isChanged() const;
 
-	void add(const Element &element, QPoint place);
+	QString add(const Element &element, QPoint place);
 	void load();
 	void saveAs(QString newName, QString newPath);
 	void save() const;
@@ -37,6 +37,7 @@ public:
 
 signals:
 	void changed();
+	void information(const QString &text) const;
 
 private:
 	std::vector<std::vector<ElementDesc>> elements;

@@ -19,12 +19,18 @@ public:
 	Element(QString name, QPixmap pixmap);
 	~Element();
 
+	bool usedLast(bool decrease = true);
+	bool releaseOne();
+
 	QString getName() const;
 	const QPixmap& getPixmap() const;
 	const parameters_t& getParameters() const;
 
 	void load(QString directory);
 	void save(QString directory) const;
+
+	bool isLimited() const;
+	int getLimit() const;
 
 private:
 	enum Data
@@ -39,8 +45,8 @@ private:
 	QPixmap pixmap;
 	parameters_t parameters;
 
-	void loadParams(QString directory);
-	void saveParams(QString directory) const;
+	int limit;
+	int left;
 
 	QString getPath(QString directory) const;
 	QString getPathOf(QString directory, Data data) const;

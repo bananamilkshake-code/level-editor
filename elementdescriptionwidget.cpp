@@ -31,7 +31,7 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint posit
 	this->position = position;
 
 	this->ui->labelElementName->setText(desc.getName());
-	this->ui->labelPositionValue->setText(QString("%1 x; %2 y").arg(QString::number(position.x()), QString::number(position.y())));
+	this->ui->labelPositionValue->setText(QString("(%1;%2)").arg(QString::number(position.x()), QString::number(position.y())));
 
 	this->freeValuesFrames();
 
@@ -39,6 +39,9 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint posit
 		return;
 
 	auto elementDesc = elements.constFind(desc.getName()).value();
+
+	QString limitText = elementDesc.isLimited() ? QString::number(elementDesc.getLimit()) : "";
+	this->ui->labelLimitValue->setText(limitText);
 
 	auto params = desc.getParams();
 	QHashIterator<QString, QString> paramIter(params);

@@ -1,5 +1,6 @@
 #include "element.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QHash>
@@ -10,6 +11,7 @@
 
 #include "floatparameter.h"
 #include "enumparameter.h"
+#include "drawarea.h"
 
 const QString Element::EXTENSION = ".element";
 const char* Element::PICTURE_FORMAT = "PNG";
@@ -25,11 +27,38 @@ Element::Element(QString name):
 {}
 
 Element::Element(QString name, QPixmap pixmap):
-	name(name), pixmap(pixmap)
+	name(name), pixmap(pixmap), limit(0), left(0)
 {}
 
 Element::~Element()
 {}
+
+bool Element::usedLast(bool decrease)
+{
+	if (!this->isLimited())
+	{
+		return false;
+	}
+
+	if (decrease)
+	{
+		this->left = std::max(0, this->left - 1);
+	}
+
+	return (this->left == 0);
+}
+
+bool Element::releaseOne()
+{
+	if (!this->isLimited())
+	{
+		return false;
+	}
+
+	this->left = std::min(this->limit, this->left + 1);
+
+	return true;
+}
 
 QString Element::getName() const
 {
@@ -46,24 +75,9 @@ const Element::parameters_t& Element::getParameters() const
 	return this->parameters;
 }
 
-void Element::load(QString directory)
-{
-	QString picFile = this->getPathOf(directory, Picture);
-	this->pixmap.load(picFile, PICTURE_FORMAT);
-
-	this->loadParams(directory);
-}
-
-void Element::save(QString elementsDirectory) const
-{
-	QDir directory(elementsDirectory);
-	directory.mkdir(this->getName());
-
-	QString picFile = this->getPathOf(elementsDirectory, Picture);
-	this->pixmap.save(picFile, PICTURE_FORMAT);
-}
-
 static const QString PARAMETERS_SERIALISATION = "parameters";
+static const QString PARAMETER_PICTURE = "picture";
+static const QString PARAMETER_LIMIT = "limit";
 
 static const QString NAME_SERIALISATION = "name";
 static const QString TYPE_SERIALISATION = "type";
@@ -77,7 +91,7 @@ static const QString FLOAT_DESC_MAX = "max";
 
 static const QString ENUM_DESC_VALUES = "values";
 
-void Element::loadParams(QString directory)
+void Element::load(QString directory)
 {
 	QString filePath = this->getPathOf(directory, Params);
 	QFile file(filePath);
@@ -85,7 +99,8 @@ void Element::loadParams(QString directory)
 	QJsonDocument document = QJsonDocument::fromJson(file.readAll());
 	file.close();
 
-	QJsonArray parametersArray = document.object()[PARAMETERS_SERIALISATION].toArray();
+	QJsonObject elementObject = document.object();
+	QJsonArray parametersArray = elementObject[PARAMETERS_SERIALISATION].toArray();
 	for (QJsonValueRef parameterObjectRef : parametersArray)
 	{
 		QJsonObject parameterObject = parameterObjectRef.toObject();
@@ -116,17 +131,28 @@ void Element::loadParams(QString directory)
 
 		this->parameters[name] = parameter;
 	}
+
+	QString picturePath = this->getPath(directory) + QDir::separator() + elementObject[PARAMETER_PICTURE].toString();
+	this->pixmap = QPixmap(picturePath, PICTURE_FORMAT).scaled(DrawArea::ELEMENT_SIZE);
+
+	if (this->pixmap.isNull())
+		qDebug() << QString("No picture \"%1\" for %2 element").arg(picturePath, this->getName());
+
+	this->limit = elementObject[PARAMETER_LIMIT].toInt();
+	this->left = this->limit;
 }
 
-void Element::saveParams(QString directory) const
-{
-	QJsonDocument document;
+void Element::save(QString directory) const
+{}
 
-	QString filePath = this->getPathOf(directory, Params);
-	QFile file(filePath);
-	file.open(QFile::WriteOnly);
-	file.write(document.toBinaryData());
-	file.close();
+bool Element::isLimited() const
+{
+	return this->limit > 0;
+}
+
+int Element::getLimit() const
+{
+	return this->limit;
 }
 
 QString Element::getPath(QString directory) const
