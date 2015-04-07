@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent):
 	this->ui->menuEditor->setEnabled(false);
 
 	this->setFixedSize(this->size());
+
+	this->ui->layoutElements->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -333,7 +335,12 @@ void MainWindow::changeMenuState(MenuState state)
 {
 	// Disable some functionality on level state.
 
+	this->ui->buttonEraser->setEnabled(LevelUnloaded != state);
+	this->ui->buttonSelect->setEnabled(LevelUnloaded != state);
+	this->ui->listElements->setEnabled(LevelUnloaded != state);
+	this->ui->groupBoxElementDesc->setEnabled(LevelUnloaded != state);
 	this->ui->drawArea->setEnabled(LevelUnloaded != state);
+
 	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
 	this->ui->actionSaveAs->setEnabled(LevelChanged == state);
 }
