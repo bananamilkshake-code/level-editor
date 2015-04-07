@@ -1,9 +1,10 @@
 #include "config.h"
 
-const QString Config::ELEMENT_PICTURE_NAME = "pic.png";
+#include <QCoreApplication>
+#include <QDir>
 
 Config::Config():
-	elementsDictory(".\\elements")
+	elementsDictory("elements")
 {}
 
 Config::~Config()
@@ -11,7 +12,7 @@ Config::~Config()
 
 QString Config::getElementsDictory() const
 {
-	return elementsDictory;
+	return (QCoreApplication::applicationDirPath() + QDir::separator() + elementsDictory);
 }
 
 void Config::setElementsDictory(const QString &value)

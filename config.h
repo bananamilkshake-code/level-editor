@@ -8,8 +8,6 @@
 class Config
 {
 public:
-	static const QString ELEMENT_PICTURE_NAME;
-
 	Config();
 	~Config();
 
