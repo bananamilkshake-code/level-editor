@@ -80,6 +80,7 @@ private:
 
 	bool closeLevel();
 
+	void adjustLayout();
 	void bindSlots();
 	void changeMenuState(MenuState state);
 	void changeToolSelection(ToolSelection toolSelection);

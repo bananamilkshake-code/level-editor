@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent):
 	// It would be nice to create elements from application
 	// but this functionality is not working fully at the moment.
 	this->ui->menuEditor->setEnabled(false);
+
+	this->setFixedSize(this->size());
 }
 
 MainWindow::~MainWindow()
@@ -132,7 +134,7 @@ void MainWindow::on_actionNewLevel_triggered()
 
 	this->level = new Level(LEVEL_STANDART_NAME, Level::SIZE);
 
-	this->ui->drawArea->prepareForLevel(Level::SIZE);
+	this->adjustLayout();
 
 	this->levelChanged();
 	this->bindSlots();
@@ -311,6 +313,12 @@ bool MainWindow::closeLevel()
 		delete this->level;
 
 	return toClose;
+}
+
+void MainWindow::adjustLayout()
+{
+	this->ui->drawArea->prepareForLevel(this->level->getSize());
+	this->adjustSize();
 }
 
 void MainWindow::bindSlots()
