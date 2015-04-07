@@ -2,6 +2,8 @@
 
 Qt application to create simple levels for 2D platformer. Levels can be created, loaded and saved (you can find level example in downloads).
 
+Project was developed as test task for C++ developer vacancy.
+
 ## Level description ##
 
 Description of each level is in single file named as `<level name>.level`. Information is described in `json` format. Description example presented below.
