@@ -134,3 +134,6 @@ Builded application archive can be downloaded from "Downloads" list. It is packa
 
 ## Level example ##
 Example of created level can be found in "Downloads". All used elements can be found in application build (upper).
+
+## License ##
+This application distributed under GPLv2 license, so you can use it freely for any purposes.
