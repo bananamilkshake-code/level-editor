@@ -18,7 +18,6 @@ const char* Element::PICTURE_FORMAT = "PNG";
 
 const QHash<Element::Data, QString> Element::DATA_FILES =
 {
-	{Element::Picture, "pic.png"},
 	{Element::Params, "params.json"}
 };
 
@@ -33,17 +32,16 @@ Element::Element(QString name, QPixmap pixmap):
 Element::~Element()
 {}
 
-bool Element::usedLast(bool boundToZero)
+bool Element::usedLast()
 {
+	// Element was placed and needs to decrease left value.
+
 	if (!this->isLimited())
 	{
 		return false;
 	}
 
 	this->left -= 1;
-
-	if (boundToZero)
-		this->left = std::max(0, this->left);
 
 	return this->isUsedLast();
 }
@@ -138,7 +136,9 @@ void Element::load(QString directory)
 	}
 
 	QString picturePath = this->getPath(directory) + QDir::separator() + elementObject[PARAMETER_PICTURE].toString();
-	this->pixmap = QPixmap(picturePath, PICTURE_FORMAT).scaled(DrawArea::ELEMENT_SIZE);
+
+	// Loaded pictures must be scaled to one size.
+	this->pixmap = QPixmap(picturePath).scaled(DrawArea::ELEMENT_SIZE);
 
 	if (this->pixmap.isNull())
 		qDebug() << QString("No picture \"%1\" for %2 element").arg(picturePath, this->getName());

@@ -14,8 +14,8 @@
    <string>Редактор</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
      <layout class="QHBoxLayout" name="layoutMain">
       <property name="sizeConstraint">
        <enum>QLayout::SetFixedSize</enum>
@@ -44,8 +44,17 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="layoutElements">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetFixedSize</enum>
+        </property>
         <item>
          <widget class="QListWidget" name="listElements">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -176,7 +185,10 @@
     <string>Добавить элемент...</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionChangeElement">
@@ -190,6 +202,9 @@
   <action name="actionUploadElements">
    <property name="text">
     <string>Обновить информацию об элементах</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionSaveAs">

@@ -3,6 +3,8 @@
 #include <QHash>
 #include <QString>
 
+
+// Keeps information about drawed element.
 struct ElementDesc
 {
 public:
@@ -16,6 +18,9 @@ public:
 	bool isEmpty() const;
 
 private:
+	// Element name.
 	QString name;
+
+	// Parameters' values.
 	QHash<QString, QString> params;
 };

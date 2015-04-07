@@ -32,7 +32,10 @@ signals:
 private:
 	Ui::LevelDescriptionWidget *ui;
 
+	// Element position.
 	QPoint position;
+
+	// Showed parameter frames.
 	QSet<ValueFrame*> valuesFrames;
 
 	void freeValuesFrames();

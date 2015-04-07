@@ -9,6 +9,8 @@ namespace Ui {
 class ElementDialog;
 }
 
+// Needed for element creation. Not used for now.
+
 class ElementDialog : public QDialog
 {
 	Q_OBJECT

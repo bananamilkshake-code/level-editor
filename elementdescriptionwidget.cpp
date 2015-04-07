@@ -58,6 +58,8 @@ void ElementDescriptionWidget::showElement(const ElementDesc &desc, QPoint posit
 
 void ElementDescriptionWidget::onChange(const QString &parameter, const QString &value)
 {
+	// Receiving signal prom parameter frame and passing it further.
+
 	emit parameterChanged(this->getPosition(), parameter, value);
 }
 
@@ -74,6 +76,9 @@ void ElementDescriptionWidget::freeValuesFrames()
 
 void ElementDescriptionWidget::showParameter(const std::shared_ptr<Parameter> &paramDesc, QString value)
 {
+	// Creating frame for parameter, placing it on layout and start listening
+	// parameter changes.
+
 	ValueFrame *parameterFrame = nullptr;
 
 	switch (paramDesc->getType())

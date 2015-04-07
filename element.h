@@ -19,7 +19,7 @@ public:
 	Element(QString name, QPixmap pixmap);
 	~Element();
 
-	bool usedLast(bool boundToZero);
+	bool usedLast();
 	bool releaseOne();
 	void resetLimit();
 
@@ -37,7 +37,6 @@ public:
 private:
 	enum Data
 	{
-		Picture,
 		Params
 	};
 
@@ -47,7 +46,11 @@ private:
 	QPixmap pixmap;
 	parameters_t parameters;
 
+	// If element limit is set user cannot place more of this elements
+	// then this limit.
 	int limit;
+
+	// Counter for left elements to limit.
 	int left;
 
 	QString getPath(QString directory) const;

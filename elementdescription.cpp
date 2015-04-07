@@ -22,5 +22,6 @@ const QHash<QString, QString> ElementDesc::getParams() const
 
 bool ElementDesc::isEmpty() const
 {
+	// If this is eraser.
 	return this->name.isNull();
 }

@@ -83,7 +83,7 @@ private:
 	void bindSlots();
 	void changeMenuState(MenuState state);
 	void changeToolSelection(ToolSelection toolSelection);
-	void elementUsed(const QString &elementName, bool boundToZero = true);
+	void elementUsed(const QString &elementName);
 	void elementUnused(const QString &elementName);
 	void loadElement(const QString &elementName);
 	void printLevel();

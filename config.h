@@ -2,6 +2,9 @@
 
 #include <QString>
 
+// In future this class can be used to load configuration
+// infogmation from file.
+
 class Config
 {
 public:

@@ -30,6 +30,8 @@ Level::~Level()
 
 void Level::init(QSize size)
 {
+	this->elements.clear();
+
 	std::vector<ElementDesc> record;
 	record.assign(size.width(), ElementDesc(QString(), QHash<QString, QString>()));
 	this->elements.assign(size.height(), record);
@@ -201,6 +203,7 @@ QString Level::add(const Element &element, QPoint place)
 		paramsValues[param->getName()] = param->getDefault();
 	}
 
+	// Need to know what element was replaced (for limit calculation).
 	QString toReplace = this->elements[place.y()][place.x()].getName();
 
 	this->elements[place.y()][place.x()] = ElementDesc(element.getName(), paramsValues);

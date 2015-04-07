@@ -37,6 +37,26 @@ void DrawArea::drawElement(const Element &element, QPoint position)
 	this->update();
 }
 
+static const QColor BACKGROUND_COLOR = Qt::black;
+
+void DrawArea::prepareForLevel(QSize newProportions)
+{
+	// Resizing widget to fit loaded level. Setting widget size
+	// proportionaly to level size (element will be PROPORTION * PROPORTION
+	// sized).
+
+	this->levelProportions = newProportions;
+
+	this->resize(this->levelProportions * PROPORTION);
+
+	// Recreating image and filling it with backgroud colour.
+
+	this->image = QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
+
+	QPainter painter(&this->image);
+	painter.fillRect(this->image.rect(), BACKGROUND_COLOR);
+}
+
 void DrawArea::setCurrentElement(const Element &element)
 {
 	this->needDraw = true;
@@ -49,20 +69,6 @@ void DrawArea::setEraser()
 	this->setCurrentElement(ERASER);
 }
 
-static const QColor BACKGROUND_COLOR = Qt::black;
-
-void DrawArea::prepareForLevel(QSize newProportions)
-{
-	this->levelProportions = newProportions;
-
-	this->resize(this->levelProportions * PROPORTION);
-
-	this->image = QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
-
-	QPainter painter(&this->image);
-	painter.fillRect(this->image.rect(), BACKGROUND_COLOR);
-}
-
 void DrawArea::startSelecting()
 {
 	this->needDraw = false;
@@ -70,17 +76,23 @@ void DrawArea::startSelecting()
 
 void DrawArea::paintEvent(QPaintEvent *)
 {
+	// Printing image all over the widget.
+
 	QPainter painter(this);
 	painter.drawImage(this->rect(), this->image);
 }
 
 void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 {
+	// Calculating selected element position.
+
 	int proportion = this->getScale();
 	QPoint position = eventPress->localPos().toPoint();
 
 	emit information(QString("Mouse position (%1, %2)").arg(QString::number(position.x()), QString::number(position.y())));
 
+	// We cannot simply calculate elementPosition as position / proportion: QPoint::operator/
+	// will round each value to neares and we will receive incorrect position.
 	QPoint elementPosition = QPoint(position.x() / proportion, position.y() / proportion);
 
 	if (this->needDraw)
@@ -97,6 +109,11 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 
 int DrawArea::getScale() const
 {
+	// Element proportion (picture size).
+	// Currently this method always return PROPORTION as widget size is fixed.
+	// This method will be helpfull when we would like to change element size
+	// or stretch widget.
+
 	return ceil(this->size().height() / (float) this->levelProportions.height());
 }
 

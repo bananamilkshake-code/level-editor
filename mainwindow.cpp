@@ -38,6 +38,10 @@ MainWindow::MainWindow(QWidget *parent):
 	this->changeToolSelection(ActionSelect);
 
 	this->ui->centralWidget->adjustSize();
+
+	// It would be nice to create elements from application
+	// but this functionality is not working fully at the moment.
+	this->ui->menuEditor->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -56,6 +60,7 @@ void MainWindow::selectElement(QPoint position) const
 
 	this->information(QString("Element selected %1").arg(elementDesc.getName()));
 
+	// Showing element parameters in groupBox.
 	this->ui->groupBoxElementDesc->showElement(elementDesc, position, this->elements);
 }
 
@@ -72,14 +77,18 @@ void MainWindow::placeElementOnLevel(const QString &elementName, QPoint position
 
 	QString replacedElement = this->level->add(element.value(), position);
 
+	// Recalculating element usage.
 	this->elementUsed(elementName);
 	this->elementUnused(replacedElement);
 
+	// Showing current element information.
 	this->selectElement(position);
 }
 
 void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 {
+	// Draw element on screen.
+
 	auto element_iter = this->elements.constFind(name);
 	if (element_iter == this->elements.end())
 	{
@@ -182,6 +191,9 @@ void MainWindow::on_actionLoadLevel_triggered()
 
 void MainWindow::on_actionAddElement_triggered()
 {
+	// Not callable now.
+	// Method opens dialog to add element description.
+
 	ElementDialog dialog(this, this->config.getElementsDictory());
 
 	QObject::connect(&dialog, SIGNAL(elementAdded(Element)), this, SLOT(addElement(Element)));
@@ -191,6 +203,9 @@ void MainWindow::on_actionAddElement_triggered()
 
 void MainWindow::on_actionChangeElement_triggered()
 {
+	// Not callable now.
+	// Method opens dialog to change selected element description.
+
 	auto elementIter = this->elements.find(this->ui->listElements->currentItem()->text());
 
 	ElementDialog dialog(this, this->config.getElementsDictory(), elementIter.value());
@@ -202,6 +217,9 @@ void MainWindow::on_actionChangeElement_triggered()
 
 void MainWindow::on_actionUploadElements_triggered()
 {
+	// Not callable now.
+	// Reloading elements information.
+
 	this->elements.clear();
 	this->ui->listElements->clear();
 
@@ -210,6 +228,8 @@ void MainWindow::on_actionUploadElements_triggered()
 
 void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 {
+	// Item selection enables drawing on drawArea.
+
 	this->changeToolSelection(ActionPaint);
 
 	auto elementIter = this->elements.find(item->text());
@@ -219,12 +239,15 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 		return;
 	}
 
+	// If element usage limit is exeeded than this element
+	// is unavailable. Choosing selecting tool instaed drawing.
 	if (elementIter.value().isUsedLast())
 	{
 		this->on_buttonSelect_clicked();
 	}
 	else
 	{
+		// drawArea remembers whit element to draw next.
 		this->ui->drawArea->setCurrentElement(elementIter.value());
 	}
 }
@@ -257,6 +280,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::closeLevel()
 {
+	//Returns true if application can be closed as level is saved or not exists.
+	// False if user canceled.
+
 	if (this->level == nullptr)
 		return true;
 
@@ -301,6 +327,8 @@ void MainWindow::bindSlots()
 
 void MainWindow::changeMenuState(MenuState state)
 {
+	// Disable some functionality on level state.
+
 	this->ui->drawArea->setEnabled(LevelUnloaded != state);
 	this->ui->actionSaveLevel->setEnabled(LevelChanged == state);
 	this->ui->actionSaveAs->setEnabled(LevelChanged == state);
@@ -308,6 +336,8 @@ void MainWindow::changeMenuState(MenuState state)
 
 void MainWindow::changeToolSelection(ToolSelection toolSelection)
 {
+	// If one tool is choosen then others must not be.
+
 	this->ui->actionChangeElement->setEnabled(ActionPaint == toolSelection);
 	this->ui->listElements->setItemSelected(this->ui->listElements->currentItem(), ActionPaint == toolSelection);
 	this->ui->buttonSelect->setDown(ActionSelect == toolSelection);
@@ -317,11 +347,15 @@ void MainWindow::changeToolSelection(ToolSelection toolSelection)
 static const QColor COLOR_ITEM_UNAVAILABLE = Qt::red;
 static const QColor COLOR_ITEM_AVAILABLE = Qt::black;
 
-void MainWindow::elementUsed(const QString &elementName, bool boundToZero)
+void MainWindow::elementUsed(const QString &elementName)
 {
+	// Updating element limit information.
+
 	auto elementIter = this->elements.find(elementName);
-	if (elementIter == this->elements.end() || !elementIter.value().usedLast(boundToZero))
+	if (elementIter == this->elements.end() || !elementIter.value().usedLast())
 		return;
+
+	// If element cannot be used anymore it's name becames colored red.
 
 	this->information("Element " + elementName + " comes to it's limit");
 
@@ -352,6 +386,7 @@ void MainWindow::loadElement(const QString &elementName)
 
 void MainWindow::printLevel()
 {
+	// Resetting elements usage to start calculating limits from scratch.
 	this->resetElementsUsage();
 
 	this->ui->drawArea->prepareForLevel(this->level->getSize());
@@ -364,7 +399,10 @@ void MainWindow::printLevel()
 			QPoint position(x, y);
 			auto element = this->level->select(position);
 			if (element.isEmpty())
+			{
+				// This is eraser. No need to draw.
 				continue;
+			}
 
 			auto elementIter = this->elements.constFind(element.getName());
 			if (elementIter == this->elements.end())
@@ -373,7 +411,7 @@ void MainWindow::printLevel()
 				continue;
 			}
 
-			this->elementUsed(element.getName(), false);
+			this->elementUsed(element.getName());
 
 			this->ui->drawArea->drawElement(elementIter.value(), position);
 		}
@@ -390,6 +428,9 @@ void MainWindow::resetElementsUsage()
 
 void MainWindow::updateElementsList()
 {
+	// Loading elements. Element is separate directory in "elements" directory
+	// in application folder.
+
 	this->elements.insert(QString(), this->ui->drawArea->ERASER);
 
 	QDir directory(this->config.getElementsDictory());

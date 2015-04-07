@@ -6,6 +6,8 @@
 
 class Parameter;
 
+// Each parameter needs it's own frame to show data.
+
 class ValueFrame : public QGroupBox
 {
 	Q_OBJECT
