@@ -4,6 +4,8 @@ Qt application to create simple levels for 2D platformer. Levels can be created,
 
 ## Level description ##
 
+Level described in json format. It has defenition of size and placed elements. Each element has information about position, type and parameters values. Description example presented below.
+
 ```
 #!json
 
@@ -69,10 +71,22 @@ Qt application to create simple levels for 2D platformer. Levels can be created,
 }
 ```
 
+Level detailed description:
+
+* **size** - level size
+    * *height* - levels's height in elements count
+    * *width* - level's width in elements count
+* **elements** - list of placed elements
+    * *name* - element's name
+    * *parameters* - list of parameters' values
+        * *parameter* - parameter name
+        * *value* - parameter value (always string)
+    * *position* - element's position
+        * *x* - x position
+        * *y* - y position
 
 ## Element's creation ##
-All elements must be placed in "elements" catalog in application folder. Each element is located in separate folder named as element itself. Each folder must contain text file in json formate, that describes element parameters. Some element description example below.
-
+All elements must be placed in `elements` catalog in application folder. Each element is located in separate folder named as element itself. Each folder must contain text file in json formate, that describes element parameters. Some element description example below.
 
 ```
 #!json
@@ -106,9 +120,12 @@ Element's parameters detailed description:
 
 * **picture** - name of picture that presents element. Must be located in element directory.
 * **limit** -  limit of element count for one level. If it is 0 - then no limit.
-* **parameters** - descriptions of element parameters that can be defined. For now element can have parameters of two types:
-    * *enum*
-    * *float*
+* **parameters** - descriptions of element parameters that can be defined. Each paameter must have elements "name" (parameter name), "type" (parameter type) and "desc" (detailed description of parameter type, differs for each type). For now element can have parameters of two types:
+    * *enum* - an be one of the defined values. Default value - first element.
+        * values - list of possible values
+    * *float* - float-pointer number from range. Default value - minimum from range.
+        * min - minimal possible value
+        * max - maximal possible value
 
 ## Application build ##
 Builded application archive can be downloaded from "Downloads" list. It is packaged with all necessary .dll files. Also archive includes some created elements to use for level creation such as Wall (has enum parameter for type), Ladder (has float parameter for speed), Player (start position).
