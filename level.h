@@ -33,11 +33,11 @@ public:
 	void saveAs(QString newName, QString newPath);
 	void save() const;
 
+	QString getName() const;
 	QSize getSize() const;
 
 signals:
 	void changed();
-	void information(const QString &text) const;
 
 private:
 	std::vector<std::vector<ElementDesc>> elements;

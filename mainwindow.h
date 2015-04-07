@@ -32,7 +32,6 @@ public slots:
 	void placeLoadedElement(const QString &name, QPoint position);
 	void addElement(Element element);
 	void replaceElement(Element element);
-	void information(const QString &text) const;
 
 private slots:
 	void on_actionNewLevel_triggered();

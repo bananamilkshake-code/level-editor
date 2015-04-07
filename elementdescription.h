@@ -3,7 +3,6 @@
 #include <QHash>
 #include <QString>
 
-
 // Keeps information about drawed element.
 struct ElementDesc
 {

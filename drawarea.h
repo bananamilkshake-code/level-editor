@@ -27,7 +27,6 @@ public:
 signals:
 	void elementPlaced(const QString &element, QPoint point);
 	void elementSelected(QPoint point);
-	void information(const QString &text);
 
 protected:
 	void paintEvent(QPaintEvent *) override;

@@ -28,7 +28,7 @@ DrawArea::~DrawArea()
 
 void DrawArea::drawElement(const Element &element, QPoint position)
 {
-	emit information("Printing element " + element.getName());
+	qDebug() << "Printing element " << element.getName();
 
 	QPainter painter(&this->image);
 	QPoint imagePosition = position * this->getScale();
@@ -89,7 +89,7 @@ void DrawArea::mousePressEvent(QMouseEvent *eventPress)
 	int proportion = this->getScale();
 	QPoint position = eventPress->localPos().toPoint();
 
-	emit information(QString("Mouse position (%1, %2)").arg(QString::number(position.x()), QString::number(position.y())));
+	qDebug() << "Mouse position " << position;
 
 	// We cannot simply calculate elementPosition as position / proportion: QPoint::operator/
 	// will round each value to neares and we will receive incorrect position.

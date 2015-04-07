@@ -135,13 +135,15 @@ void Element::load(QString directory)
 		this->parameters[name] = parameter;
 	}
 
-	QString picturePath = this->getPath(directory) + QDir::separator() + elementObject[PARAMETER_PICTURE].toString();
+	QString picturePath = QString("%1%2%3").arg(this->getPath(directory), QDir::separator(), elementObject[PARAMETER_PICTURE].toString());
+
+	qDebug() << "Picture path for " << this->name << " element is " << picturePath;
 
 	// Loaded pictures must be scaled to one size.
 	this->pixmap = QPixmap(picturePath).scaled(DrawArea::ELEMENT_SIZE);
 
 	if (this->pixmap.isNull())
-		qDebug() << QString("No picture \"%1\" for %2 element").arg(picturePath, this->getName());
+		qDebug() << "No picture \"" << picturePath << "\" for " << this->getName() << " element";
 
 	this->limit = elementObject[PARAMETER_LIMIT].toInt();
 

@@ -60,7 +60,7 @@ void MainWindow::selectElement(QPoint position) const
 {
 	ElementDesc &elementDesc = this->level->select(position);
 
-	this->information(QString("Element selected %1").arg(elementDesc.getName()));
+	qDebug() << "Element selected " << elementDesc.getName();
 
 	// Showing element parameters in groupBox.
 	this->ui->groupBoxElementDesc->showElement(elementDesc, position, this->elements);
@@ -68,7 +68,7 @@ void MainWindow::selectElement(QPoint position) const
 
 void MainWindow::changeParameter(QPoint position, const QString parameter, const QString newValue)
 {
-	this->information(QString("Parameter %1 for element on position (%2, %3) changed to %4").arg(parameter , QString::number(position.x()), QString::number(position.y()), newValue));
+	qDebug() << "Parameter " << parameter << " for element on position " << position << " changed to " << newValue;
 
 	this->level->changeParameter(position, parameter, newValue);
 }
@@ -97,7 +97,7 @@ void MainWindow::placeLoadedElement(const QString &name, QPoint position)
 		return;
 	}
 
-	this->information("Element with name " + name);
+	qDebug() << "Element with name " << name;
 
 	this->ui->drawArea->drawElement(element_iter.value(), position);
 }
@@ -118,11 +118,6 @@ void MainWindow::replaceElement(Element element)
 	this->elements.erase(elementIter);
 
 	this->addElement(element);
-}
-
-void MainWindow::information(const QString &text) const
-{
-	qDebug() << text;
 }
 
 static const QString LEVEL_STANDART_NAME = "newlevel";
@@ -194,7 +189,7 @@ void MainWindow::on_actionLoadLevel_triggered()
 void MainWindow::on_actionAddElement_triggered()
 {
 	// Not callable now.
-	// Method opens dialog to add element description.
+	// Method opens dialog to add ``description.
 
 	ElementDialog dialog(this, this->config.getElementsDictory());
 
@@ -237,7 +232,7 @@ void MainWindow::on_listElements_itemClicked(QListWidgetItem *item)
 	auto elementIter = this->elements.find(item->text());
 	if (elementIter == this->elements.end())
 	{
-		this->information("No element with name " + item->text());
+		qCritical() << "No element with name " << item->text();
 		return;
 	}
 
@@ -310,7 +305,10 @@ bool MainWindow::closeLevel()
 	}
 
 	if (toClose)
+	{
 		delete this->level;
+		this->level = nullptr;
+	}
 
 	return toClose;
 }
@@ -325,10 +323,8 @@ void MainWindow::bindSlots()
 {
 	QObject::connect(this->ui->drawArea, SIGNAL(elementPlaced(QString, QPoint)), this, SLOT(placeElementOnLevel(QString, QPoint)));
 	QObject::connect(this->ui->drawArea, SIGNAL(elementSelected(QPoint)), this, SLOT(selectElement(QPoint)));
-	QObject::connect(this->ui->drawArea, SIGNAL(information(QString)), this, SLOT(information(QString)));
 
 	QObject::connect(this->level, SIGNAL(changed()), this, SLOT(levelChanged()));
-	QObject::connect(this->level, SIGNAL(information(QString)), this, SLOT(information(QString)));
 
 	QObject::connect(this->ui->groupBoxElementDesc, SIGNAL(parameterChanged(QPoint,QString,QString)), this, SLOT(changeParameter(QPoint,QString,QString)));
 }
@@ -365,7 +361,7 @@ void MainWindow::elementUsed(const QString &elementName)
 
 	// If element cannot be used anymore it's name becames colored red.
 
-	this->information("Element " + elementName + " comes to it's limit");
+	qDebug() << "Element " << elementName << " comes to it's limit";
 
 	this->findElementItem(elementName)->setTextColor(COLOR_ITEM_UNAVAILABLE);
 
@@ -378,7 +374,7 @@ void MainWindow::elementUnused(const QString &elementName)
 	if (elementIter == this->elements.end() || !elementIter.value().releaseOne())
 		return;
 
-	this->information("Element " + elementName + " must be unlocked");
+	qDebug() << "Element " << elementName << " must be unlocked";
 
 	this->findElementItem(elementName)->setTextColor(COLOR_ITEM_AVAILABLE);
 }
@@ -415,7 +411,7 @@ void MainWindow::printLevel()
 			auto elementIter = this->elements.constFind(element.getName());
 			if (elementIter == this->elements.end())
 			{
-				this->information("No element with name " + element.getName() + " to print");
+				qWarning() << "No element with name " << element.getName() << " for level " << this->level->getName() << " to print";
 				continue;
 			}
 
@@ -445,6 +441,8 @@ void MainWindow::updateElementsList()
 	auto elements = directory.entryList(QStringList("[A-Za-z]*"), QDir::Filter::Dirs);
 	for (QString elementName : elements)
 	{
+		qDebug() << "Element " << elementName << " found";
+
 		this->loadElement(elementName);
 	}
 }

@@ -95,7 +95,7 @@ void Level::load()
 		this->elements[position.y()][position.x()] = ElementDesc(name, parameters);
 	}
 
-	emit information("Level " + this->name + " loaded");
+	qDebug() << "Level " << this->name << " loaded";
 }
 
 void Level::saveAs(QString newName, QString newPath)
@@ -157,7 +157,12 @@ void Level::save() const
 
 	this->isSaved = true;
 
-	emit information(QString("Level %1 saved").arg(QString(this->name)));
+	qDebug() << "Level " << this->name << " saved";
+}
+
+QString Level::getName() const
+{
+	return this->name;
 }
 
 QSize Level::getSize() const
