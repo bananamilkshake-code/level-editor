@@ -4,7 +4,7 @@ Qt application to create simple levels for 2D platformer. Levels can be created,
 
 ## Level description ##
 
-Level described in json format. It has defenition of size and placed elements. Each element has information about position, type and parameters values. Description example presented below.
+Description of each level is in single file named as `<level name>.level`. Information is described in `json` format. Description example presented below.
 
 ```
 #!json
