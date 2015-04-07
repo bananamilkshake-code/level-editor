@@ -130,10 +130,10 @@ Element's parameters detailed description:
         * max - maximal possible value
 
 ## Application build ##
-Builded application archive can be downloaded from "Downloads" list. It is packaged with all necessary .dll files. Also archive includes some created elements to use for level creation such as Wall (has enum parameter for type), Ladder (has float parameter for speed), Player (start position).
+Builded application archive can be downloaded [here](https://bitbucket.org/bananamilkshake/level-editor/downloads). It is packaged with all necessary .dll files. Also archive includes some created elements to use for level creation such as Wall (has enum parameter for type), Ladder (has float parameter for speed), Player (start position).
 
 ## Level example ##
-Example of created level can be found in "Downloads". All used elements can be found in application build (upper).
+Example of created level can be found [here](https://bitbucket.org/bananamilkshake/level-editor/downloads). All used elements can be found in application build (upper).
 
 ## License ##
 This application distributed under GPLv2 license, so you can use it freely for any purposes.
