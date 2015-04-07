@@ -23,6 +23,8 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 		stream << "[FATAL  " << time << "]: " << msg << "\n";
 		abort();
 	}
+
+	stream.flush();
 }
 
 int main(int argc, char *argv[])
