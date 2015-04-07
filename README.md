@@ -1,6 +1,6 @@
 # Level editor #
 
-Qt application to create simple levels for 2D platformer. Levels can be created, loaded and saved (you can find level example in downloads).
+Qt application to create simple levels for 2D platformer. Levels can be created, loaded and saved (you can find level example in downloads). Qt 5.4 version used.
 
 Project was developed as test task for C++ developer vacancy.
 
